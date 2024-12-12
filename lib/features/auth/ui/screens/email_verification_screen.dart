@@ -88,4 +88,10 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
     // if (_formKey.currentState!.validate()) {};
     Navigator.pushNamed(context, OtpVerificationScreen.route);
   }
+
+  @override
+  void dispose() {
+    _emailTEController.dispose();
+    super.dispose();
+  }
 }
