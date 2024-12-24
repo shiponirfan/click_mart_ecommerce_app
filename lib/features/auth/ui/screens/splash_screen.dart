@@ -1,5 +1,6 @@
-import 'package:click_mart_ecommerce_app/features/auth/ui/screens/email_verification_screen.dart';
 import 'package:click_mart_ecommerce_app/features/auth/ui/widgets/app_logo_widget.dart';
+import 'package:click_mart_ecommerce_app/features/common/ui/screens/main_navbar_screen.dart';
+import 'package:click_mart_ecommerce_app/features/home/ui/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -20,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _moveToNextScreen() async {
     await Future.delayed(const Duration(seconds: 2));
-    Navigator.pushReplacementNamed(context, EmailVerificationScreen.route);
+    Navigator.pushReplacementNamed(context, MainNavbarScreen.route);
   }
 
   @override

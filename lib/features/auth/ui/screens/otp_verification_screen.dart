@@ -117,8 +117,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       )
                     : TextButton(
                         onPressed: _startResendCodeTimer,
-                        child:
-                            Text('Resend Code', style: textTheme.labelLarge))),
+                        child: Text('Resend Code',
+                            style: textTheme.labelLarge
+                                ?.copyWith(color: AppColors.themeColor)))),
               ],
             ),
           ),

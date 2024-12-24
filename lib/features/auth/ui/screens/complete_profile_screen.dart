@@ -2,7 +2,6 @@ import 'package:click_mart_ecommerce_app/app/app_colors.dart';
 import 'package:click_mart_ecommerce_app/features/auth/ui/screens/otp_verification_screen.dart';
 import 'package:click_mart_ecommerce_app/features/auth/ui/widgets/app_logo_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class CompleteProfileScreen extends StatefulWidget {
   const CompleteProfileScreen({super.key});
