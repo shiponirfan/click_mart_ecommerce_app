@@ -1,6 +1,9 @@
 import 'package:click_mart_ecommerce_app/app/app_colors.dart';
 import 'package:click_mart_ecommerce_app/app/assets_path.dart';
+import 'package:click_mart_ecommerce_app/features/common/ui/widgets/category_card_widget.dart';
+import 'package:click_mart_ecommerce_app/features/common/ui/widgets/single_product_card.dart';
 import 'package:click_mart_ecommerce_app/features/home/ui/widgets/appbar_icon_button.dart';
+import 'package:click_mart_ecommerce_app/features/home/ui/widgets/heading_title_with_button.dart';
 import 'package:click_mart_ecommerce_app/features/home/ui/widgets/home_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -28,11 +31,93 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(
               height: 10,
             ),
-            const HomeSlider()
+            const HomeSlider(),
+            const SizedBox(
+              height: 16,
+            ),
+            HeadingTitleWithButton(
+              title: 'All Categories',
+              onPressed: () {},
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: _getCategoryList(),
+              ),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            HeadingTitleWithButton(
+              title: 'Popular',
+              onPressed: () {},
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: _getProductList(),
+              ),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            HeadingTitleWithButton(
+              title: 'Special',
+              onPressed: () {},
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: _getProductList(),
+              ),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            HeadingTitleWithButton(
+              title: 'New',
+              onPressed: () {},
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: _getProductList(),
+              ),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  List<Widget> _getCategoryList() {
+    List<Widget> categoryList = [];
+    for (int i = 0; i < 10; i++) {
+      categoryList.add(const Padding(
+          padding: EdgeInsets.only(right: 16), child: CategoryCardWidget()));
+    }
+    return categoryList;
+  }
+
+  List<Widget> _getProductList() {
+    List<Widget> productList = [];
+    for (int i = 0; i < 10; i++) {
+      productList.add(const Padding(
+          padding: EdgeInsets.only(right: 10), child: SingleProductCard()));
+    }
+    return productList;
   }
 
   TextFormField _buildSearchInput() {
@@ -52,6 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   AppBar _buildAppBar() {
     return AppBar(
+      forceMaterialTransparency: true,
       title: SvgPicture.asset(
         AssetsPath.appLogoNavSvg,
         height: 28,

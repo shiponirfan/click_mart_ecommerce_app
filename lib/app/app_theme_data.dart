@@ -5,6 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 class AppThemeData {
   static ThemeData get lightThemeData {
     return ThemeData(
+      appBarTheme: const AppBarTheme(
+        color: Colors.white,
+      ),
       colorSchemeSeed: AppColors.themeColor,
       progressIndicatorTheme: const ProgressIndicatorThemeData(
         color: AppColors.themeColor,
