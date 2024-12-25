@@ -4,8 +4,10 @@ import 'package:click_mart_ecommerce_app/features/auth/ui/screens/complete_profi
 import 'package:click_mart_ecommerce_app/features/auth/ui/screens/email_verification_screen.dart';
 import 'package:click_mart_ecommerce_app/features/auth/ui/screens/otp_verification_screen.dart';
 import 'package:click_mart_ecommerce_app/features/auth/ui/screens/splash_screen.dart';
+import 'package:click_mart_ecommerce_app/features/category/ui/screens/category_list_screen.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/screens/main_navbar_screen.dart';
 import 'package:click_mart_ecommerce_app/features/home/ui/screens/home_screen.dart';
+import 'package:click_mart_ecommerce_app/features/products/ui/screens/product_list_by_category_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -20,14 +22,32 @@ class ClickMart extends StatelessWidget {
       darkTheme: AppThemeData.darkThemeData,
       initialRoute: SplashScreen.route,
       initialBinding: ControllerBinder(),
-      routes: {
-        SplashScreen.route: (context) => const SplashScreen(),
-        EmailVerificationScreen.route: (context) =>
-            const EmailVerificationScreen(),
-        OtpVerificationScreen.route: (context) => const OtpVerificationScreen(),
-        CompleteProfileScreen.route: (context) => const CompleteProfileScreen(),
-        HomeScreen.route: (context) => const HomeScreen(),
-        MainNavbarScreen.route: (context) => const MainNavbarScreen(),
+      onGenerateRoute: (RouteSettings settings) {
+        late Widget route;
+        if (settings.name == SplashScreen.route) {
+          route = const SplashScreen();
+        } else if (settings.name == EmailVerificationScreen.route) {
+          route = const EmailVerificationScreen();
+        } else if (settings.name == OtpVerificationScreen.route) {
+          route = const OtpVerificationScreen();
+        } else if (settings.name == CompleteProfileScreen.route) {
+          route = const CompleteProfileScreen();
+        } else if (settings.name == HomeScreen.route) {
+          route = const HomeScreen();
+        } else if (settings.name == MainNavbarScreen.route) {
+          route = const MainNavbarScreen();
+        } else if (settings.name == CategoryListScreen.route) {
+          route = const CategoryListScreen();
+        } else if (settings.name == ProductListByCategoryScreen.route) {
+          route = ProductListByCategoryScreen(
+              categoryName: settings.arguments as String);
+        }
+        return MaterialPageRoute(
+          builder: (context) {
+            return route;
+          },
+        );
+
       },
     );
   }

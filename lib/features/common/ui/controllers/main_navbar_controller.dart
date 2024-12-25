@@ -12,4 +12,12 @@ class MainNavbarController extends GetxController {
     _selectedIndex = index;
     update();
   }
+
+  void backToHomeScreen() {
+    changeIndex(0);
+  }
+
+  void moveToCategoryListScreen() {
+    changeIndex(1);
+  }
 }

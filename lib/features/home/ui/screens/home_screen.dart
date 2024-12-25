@@ -1,13 +1,16 @@
 import 'package:click_mart_ecommerce_app/app/app_colors.dart';
 import 'package:click_mart_ecommerce_app/app/assets_path.dart';
+import 'package:click_mart_ecommerce_app/features/common/ui/controllers/main_navbar_controller.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/widgets/category_card_widget.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/widgets/single_product_card.dart';
 import 'package:click_mart_ecommerce_app/features/home/ui/widgets/appbar_icon_button.dart';
 import 'package:click_mart_ecommerce_app/features/home/ui/widgets/heading_title_with_button.dart';
 import 'package:click_mart_ecommerce_app/features/home/ui/widgets/home_slider.dart';
+import 'package:click_mart_ecommerce_app/features/products/ui/screens/product_list_by_category_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -37,7 +40,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             HeadingTitleWithButton(
               title: 'All Categories',
-              onPressed: () {},
+              onPressed: () {
+                Get.find<MainNavbarController>().moveToCategoryListScreen();
+              },
             ),
             const SizedBox(
               height: 16,
@@ -53,7 +58,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             HeadingTitleWithButton(
               title: 'Popular',
-              onPressed: () {},
+              onPressed: () {
+                Get.toNamed(ProductListByCategoryScreen.route, arguments: 'Popular');
+              },
             ),
             const SizedBox(
               height: 16,
