@@ -1,3 +1,4 @@
+import 'package:click_mart_ecommerce_app/features/cart/ui/screens/cart_item_screen.dart';
 import 'package:click_mart_ecommerce_app/features/category/ui/screens/category_list_screen.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/controllers/main_navbar_controller.dart';
 import 'package:click_mart_ecommerce_app/features/home/ui/screens/home_screen.dart';
@@ -18,7 +19,7 @@ class _MainNavbarScreenState extends State<MainNavbarScreen> {
   final List<Widget> _screens = [
     const HomeScreen(),
     const CategoryListScreen(),
-    const HomeScreen(),
+    const CartItemScreen(),
     const WishListScreen(),
   ];
 

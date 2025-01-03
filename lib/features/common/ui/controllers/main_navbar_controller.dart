@@ -20,4 +20,8 @@ class MainNavbarController extends GetxController {
   void moveToCategoryListScreen() {
     changeIndex(1);
   }
+
+  void moveToCartItemScreen() {
+    changeIndex(2);
+  }
 }
