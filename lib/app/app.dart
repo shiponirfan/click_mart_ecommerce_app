@@ -24,7 +24,7 @@ class ClickMart extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppThemeData.lightThemeData,
       darkTheme: AppThemeData.darkThemeData,
-      initialRoute: SplashScreen.route,
+      initialRoute: EmailVerificationScreen.route,
       initialBinding: ControllerBinder(),
       onGenerateRoute: (RouteSettings settings) {
         late Widget route;
@@ -33,9 +33,13 @@ class ClickMart extends StatelessWidget {
         } else if (settings.name == EmailVerificationScreen.route) {
           route = const EmailVerificationScreen();
         } else if (settings.name == OtpVerificationScreen.route) {
-          route = const OtpVerificationScreen();
+          route = OtpVerificationScreen(
+            email: settings.arguments as String,
+          );
         } else if (settings.name == CompleteProfileScreen.route) {
-          route = const CompleteProfileScreen();
+          route = CompleteProfileScreen(
+            accessToken: settings.arguments as String,
+          );
         } else if (settings.name == HomeScreen.route) {
           route = const HomeScreen();
         } else if (settings.name == MainNavbarScreen.route) {

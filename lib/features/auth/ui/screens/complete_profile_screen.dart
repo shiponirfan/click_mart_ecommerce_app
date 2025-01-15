@@ -1,12 +1,16 @@
 import 'package:click_mart_ecommerce_app/app/app_colors.dart';
-import 'package:click_mart_ecommerce_app/features/auth/ui/screens/otp_verification_screen.dart';
+import 'package:click_mart_ecommerce_app/features/auth/data/models/profile_model.dart';
+import 'package:click_mart_ecommerce_app/features/auth/ui/controllers/complete_profile_controller.dart';
 import 'package:click_mart_ecommerce_app/features/auth/ui/widgets/app_logo_widget.dart';
+import 'package:click_mart_ecommerce_app/features/common/ui/screens/main_navbar_screen.dart';
+import 'package:click_mart_ecommerce_app/features/common/ui/widgets/show_snackbar_message.dart';
 import 'package:flutter/material.dart';
 
 class CompleteProfileScreen extends StatefulWidget {
-  const CompleteProfileScreen({super.key});
+  const CompleteProfileScreen({super.key, required this.accessToken});
 
   static String route = 'complete-profile-screen';
+  final String accessToken;
 
   @override
   State<CompleteProfileScreen> createState() => _CompleteProfileScreenState();
@@ -19,6 +23,8 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
   final TextEditingController _cityTEController = TextEditingController();
   final TextEditingController _addressTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final CompleteProfileController _completeProfileController =
+      CompleteProfileController();
 
   @override
   Widget build(BuildContext context) {
@@ -168,9 +174,42 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
     );
   }
 
-  void _onPressMoveToNextScreen() {
-    // if (_formKey.currentState!.validate()) {};
-    Navigator.pushNamed(context, OtpVerificationScreen.route);
+  void _onPressMoveToNextScreen() async {
+    if (_formKey.currentState!.validate()) {
+      String fullName =
+          '${_firstNameTEController.text.trim()} ${_lastNameTEController.text.trim()}';
+      Map<String, dynamic> body = ProfileModel(
+        cusName: fullName,
+        cusAdd: _addressTEController.text.trim(),
+        cusCity: _cityTEController.text.trim(),
+        cusState: _cityTEController.text.trim(),
+        cusPostcode: '0',
+        cusCountry: 'Bangladesh',
+        cusPhone: _mobileTEController.text.trim(),
+        cusFax: _mobileTEController.text.trim(),
+        shipName: fullName,
+        shipAdd: _addressTEController.text.trim(),
+        shipCity: _cityTEController.text.trim(),
+        shipState: _cityTEController.text.trim(),
+        shipPostcode: '0',
+        shipCountry: 'Bangladesh',
+        shipPhone: _mobileTEController.text.trim(),
+      ).toJson();
+
+      bool isSuccess = await _completeProfileController.createProfile(
+          body: body, token: widget.accessToken);
+      if (isSuccess) {
+        if (mounted) {
+          Navigator.pushNamedAndRemoveUntil(
+              context, MainNavbarScreen.route, (predicate) => false);
+        }
+      } else {
+        if (mounted) {
+          showSnackBarMessage(
+              context, _completeProfileController.errorMessage!, true);
+        }
+      }
+    }
   }
 
   @override
