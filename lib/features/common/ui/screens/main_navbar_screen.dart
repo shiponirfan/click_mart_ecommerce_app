@@ -1,6 +1,9 @@
 import 'package:click_mart_ecommerce_app/features/cart/ui/screens/cart_item_screen.dart';
+import 'package:click_mart_ecommerce_app/features/category/ui/controllers/category_list_controller.dart';
 import 'package:click_mart_ecommerce_app/features/category/ui/screens/category_list_screen.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/controllers/main_navbar_controller.dart';
+import 'package:click_mart_ecommerce_app/features/home/ui/controllers/home_slider_controller.dart';
+import 'package:click_mart_ecommerce_app/features/home/ui/controllers/product_list_by_remark_controller.dart';
 import 'package:click_mart_ecommerce_app/features/home/ui/screens/home_screen.dart';
 import 'package:click_mart_ecommerce_app/features/wishList/ui/screens/wish_list_screen.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +25,19 @@ class _MainNavbarScreenState extends State<MainNavbarScreen> {
     const CartItemScreen(),
     const WishListScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    Get.find<HomeSliderController>().getBannerSlide();
+    Get.find<CategoryListController>().getCategoryList();
+    Get.put(ProductListByRemarkController(), tag: 'popular')
+        .getProductListByRemark('popular');
+    Get.put(ProductListByRemarkController(), tag: 'special')
+        .getProductListByRemark('special');
+    Get.put(ProductListByRemarkController(), tag: 'new')
+        .getProductListByRemark('new');
+  }
 
   @override
   Widget build(BuildContext context) {

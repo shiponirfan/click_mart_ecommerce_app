@@ -24,7 +24,7 @@ class ClickMart extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppThemeData.lightThemeData,
       darkTheme: AppThemeData.darkThemeData,
-      initialRoute: EmailVerificationScreen.route,
+      initialRoute: SplashScreen.route,
       initialBinding: ControllerBinder(),
       onGenerateRoute: (RouteSettings settings) {
         late Widget route;

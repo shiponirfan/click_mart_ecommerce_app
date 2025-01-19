@@ -1,11 +1,16 @@
 import 'package:click_mart_ecommerce_app/app/app_colors.dart';
 import 'package:click_mart_ecommerce_app/app/assets_path.dart';
+import 'package:click_mart_ecommerce_app/features/category/data/models/category_model.dart';
+import 'package:click_mart_ecommerce_app/features/category/ui/controllers/category_list_controller.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/controllers/main_navbar_controller.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/widgets/category_card_widget.dart';
+import 'package:click_mart_ecommerce_app/features/common/ui/widgets/center_circular_progress_indicator.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/widgets/single_product_card.dart';
+import 'package:click_mart_ecommerce_app/features/home/ui/controllers/product_list_by_remark_controller.dart';
 import 'package:click_mart_ecommerce_app/features/home/ui/widgets/appbar_icon_button.dart';
 import 'package:click_mart_ecommerce_app/features/home/ui/widgets/heading_title_with_button.dart';
 import 'package:click_mart_ecommerce_app/features/home/ui/widgets/home_slider.dart';
+import 'package:click_mart_ecommerce_app/features/products/data/models/product_model.dart';
 import 'package:click_mart_ecommerce_app/features/products/ui/screens/product_list_by_category_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +20,7 @@ import 'package:get/get.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
-  static String route = 'home-screen';
+  static String route = '/home';
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -47,30 +52,43 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(
               height: 16,
             ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: _getCategoryList(),
-              ),
-            ),
+            GetBuilder<CategoryListController>(builder: (controller) {
+              if (controller.inProgress) {
+                return const CenterCircularProgressIndicator();
+              }
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: _getCategoryList(controller.categoryList ?? []),
+                ),
+              );
+            }),
             const SizedBox(
               height: 16,
             ),
             HeadingTitleWithButton(
               title: 'Popular',
               onPressed: () {
-                Get.toNamed(ProductListByCategoryScreen.route, arguments: 'Popular');
+                Get.toNamed(ProductListByCategoryScreen.route,
+                    arguments: 'Popular');
               },
             ),
             const SizedBox(
               height: 16,
             ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: _getProductList(),
-              ),
-            ),
+            GetBuilder<ProductListByRemarkController>(
+                tag: 'popular',
+                builder: (controller) {
+                  if (controller.inProgress) {
+                    return const CenterCircularProgressIndicator();
+                  }
+                  return SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: _getProductList(controller.productList ?? []),
+                    ),
+                  );
+                }),
             const SizedBox(
               height: 16,
             ),
@@ -81,12 +99,19 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(
               height: 16,
             ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: _getProductList(),
-              ),
-            ),
+            GetBuilder<ProductListByRemarkController>(
+                tag: 'special',
+                builder: (controller) {
+                  if (controller.inProgress) {
+                    return const CenterCircularProgressIndicator();
+                  }
+                  return SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: _getProductList(controller.productList ?? []),
+                    ),
+                  );
+                }),
             const SizedBox(
               height: 16,
             ),
@@ -97,34 +122,47 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(
               height: 16,
             ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: _getProductList(),
-              ),
-            ),
+            GetBuilder<ProductListByRemarkController>(
+                tag: 'new',
+                builder: (controller) {
+                  if (controller.inProgress) {
+                    return const CenterCircularProgressIndicator();
+                  }
+                  return SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: _getProductList(controller.productList ?? []),
+                    ),
+                  );
+                }),
           ],
         ),
       ),
     );
   }
 
-  List<Widget> _getCategoryList() {
-    List<Widget> categoryList = [];
-    for (int i = 0; i < 10; i++) {
-      categoryList.add(const Padding(
-          padding: EdgeInsets.only(right: 16), child: CategoryCardWidget()));
+  List<Widget> _getCategoryList(List<CategoryModel> categoryList) {
+    List<Widget> list = [];
+    for (int i = 0; i < categoryList.length; i++) {
+      list.add(Padding(
+          padding: const EdgeInsets.only(right: 16),
+          child: CategoryCardWidget(
+            categoryModel: categoryList[i],
+          )));
     }
-    return categoryList;
+    return list;
   }
 
-  List<Widget> _getProductList() {
-    List<Widget> productList = [];
-    for (int i = 0; i < 10; i++) {
-      productList.add(const Padding(
-          padding: EdgeInsets.only(right: 10), child: SingleProductCard()));
+  List<Widget> _getProductList(List<ProductModel> productList) {
+    List<Widget> list = [];
+    for (int i = 0; i < productList.length; i++) {
+      list.add(Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: SingleProductCard(
+            productModel: productList[i],
+          )));
     }
-    return productList;
+    return list;
   }
 
   TextFormField _buildSearchInput() {

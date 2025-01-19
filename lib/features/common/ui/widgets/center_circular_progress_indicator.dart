@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class CircularProgressIndicator extends StatelessWidget {
-  const CircularProgressIndicator({super.key});
+class CenterCircularProgressIndicator extends StatelessWidget {
+  const CenterCircularProgressIndicator({super.key});
 
   @override
   Widget build(BuildContext context) {
