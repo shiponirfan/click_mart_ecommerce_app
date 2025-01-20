@@ -24,31 +24,38 @@ class _ProductListByRemarkScreenState extends State<ProductListByRemarkScreen> {
       appBar: AppBar(
         title: Text(widget.remark),
       ),
-      body: GetBuilder<ProductListByRemarkController>(
-          tag: 'Popular',
-          builder: (controller) {
-            if (controller.inProgress) {
-              return _buildProductByRemarkShimmerEffect();
-            }
-            if(controller.productList!.isEmpty){
-              return const NoProductFound();
-            }
-            return GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  mainAxisSpacing: 10,
-                  crossAxisSpacing: 10,
-                  mainAxisExtent: 170),
-              itemBuilder: (context, index) {
-                ProductModel productModel = controller.productList![index];
-                return SingleProductCard(
-                  productModel: productModel,
-                );
-              },
-              itemCount: controller.productList!.length,
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            );
-          }),
+      body: RefreshIndicator(
+        onRefresh: () {
+          return Get.put(ProductListByRemarkController(), tag: widget.remark)
+              .getProductListByRemark(widget.remark);
+        },
+        child: GetBuilder<ProductListByRemarkController>(
+            tag: widget.remark,
+            builder: (controller) {
+              if (controller.inProgress) {
+                return _buildProductByRemarkShimmerEffect();
+              }
+              if (controller.productList!.isEmpty) {
+                return const NoProductFound();
+              }
+              return GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                    mainAxisExtent: 170),
+                itemBuilder: (context, index) {
+                  ProductModel productModel = controller.productList![index];
+                  return SingleProductCard(
+                    productModel: productModel,
+                  );
+                },
+                itemCount: controller.productList!.length,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              );
+            }),
+      ),
     );
   }
 

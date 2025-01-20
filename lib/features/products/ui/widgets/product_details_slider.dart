@@ -5,11 +5,14 @@ import 'package:flutter/material.dart';
 class ProductDetailsSlider extends StatelessWidget {
   const ProductDetailsSlider({
     super.key,
+    required this.images,
   });
+
+  final List<String> images;
 
   @override
   Widget build(BuildContext context) {
-    final ValueNotifier<int> _sliderChangeIndex = ValueNotifier(0);
+    final ValueNotifier<int> sliderChangeIndex = ValueNotifier(0);
     return Stack(
       children: [
         CarouselSlider(
@@ -17,26 +20,18 @@ class ProductDetailsSlider extends StatelessWidget {
             height: 230,
             viewportFraction: 1,
             onPageChanged: (currentIndex, reason) {
-              _sliderChangeIndex.value = currentIndex;
+              sliderChangeIndex.value = currentIndex;
             },
           ),
-          items: [1, 2, 3, 4, 5].map((i) {
+          items: images.map((url) {
             return Builder(
               builder: (BuildContext context) {
                 return Container(
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
                       color: Colors.black12,
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Slider $i',
-                        style: const TextStyle(
-                          fontSize: 16.0,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ));
+                      image: DecorationImage(image: NetworkImage(url), fit: BoxFit.cover)),
+                );
               },
             );
           }).toList(),
@@ -46,7 +41,7 @@ class ProductDetailsSlider extends StatelessWidget {
           left: 0,
           right: 0,
           child: ValueListenableBuilder(
-            valueListenable: _sliderChangeIndex,
+            valueListenable: sliderChangeIndex,
             builder: (context, value, child) {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.center,

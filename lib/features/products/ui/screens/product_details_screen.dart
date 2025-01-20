@@ -1,6 +1,9 @@
 import 'package:click_mart_ecommerce_app/app/app_colors.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/controllers/main_navbar_controller.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/screens/main_navbar_screen.dart';
+import 'package:click_mart_ecommerce_app/features/common/ui/widgets/center_circular_progress_indicator.dart';
+import 'package:click_mart_ecommerce_app/features/products/data/models/product_details_list_model.dart';
+import 'package:click_mart_ecommerce_app/features/products/ui/controllers/product_details_controller.dart';
 import 'package:click_mart_ecommerce_app/features/products/ui/widgets/product_color_option_widget.dart';
 import 'package:click_mart_ecommerce_app/features/products/ui/widgets/product_details_slider.dart';
 import 'package:click_mart_ecommerce_app/features/products/ui/widgets/product_quantity_button.dart';
@@ -9,6 +12,7 @@ import 'package:click_mart_ecommerce_app/features/reviews/ui/screens/reviews_scr
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   const ProductDetailsScreen({super.key, required this.productId});
@@ -22,82 +26,114 @@ class ProductDetailsScreen extends StatefulWidget {
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   @override
+  void initState() {
+    super.initState();
+    Get.find<ProductDetailsController>().getProductDetails(widget.productId);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Product Details'),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  const ProductDetailsSlider(),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildProductTitleSection(textTheme),
-                        Text(
-                          'Color',
-                          style: textTheme.titleMedium,
+      body: RefreshIndicator(
+        onRefresh: () {
+          return Get.find<ProductDetailsController>()
+              .getProductDetails(widget.productId);
+        },
+        child: GetBuilder<ProductDetailsController>(builder: (controller) {
+          if (controller.inProgress) {
+            return _buildShimmerEffects();
+          }
+          if (controller.errorMessage != null) {
+            return Text(controller.errorMessage!);
+          }
+          ProductDetailsModel productDetailsModel = controller.productDetails!;
+          return Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      ProductDetailsSlider(
+                        images: [
+                          productDetailsModel.img1 ?? '',
+                          productDetailsModel.img2 ?? '',
+                          productDetailsModel.img3 ?? '',
+                          productDetailsModel.img4 ?? '',
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildProductTitleSection(
+                                textTheme,
+                                productDetailsModel.product?.title ?? '',
+                                productDetailsModel.product?.star ?? 0),
+                            Text(
+                              'Color',
+                              style: textTheme.titleMedium,
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            ProductColorOptionWidget(
+                              colors: productDetailsModel.color!.split(','),
+                              onChange: (String color) {},
+                            ),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            Text(
+                              'Size',
+                              style: textTheme.titleMedium,
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            ProductSizeOptionWidget(
+                              size: productDetailsModel.size!.split(','),
+                              onChange: (String size) {},
+                            ),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            Text(
+                              'Description',
+                              style: textTheme.titleMedium,
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            Text(
+                              productDetailsModel.des ?? '',
+                              style: textTheme.bodyMedium,
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                          ],
                         ),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        ProductColorOptionWidget(
-                          colors: const ['Red', 'Green', 'Blue', 'Yellow'],
-                          onChange: (String color) {},
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        Text(
-                          'Size',
-                          style: textTheme.titleMedium,
-                        ),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        ProductSizeOptionWidget(
-                          size: const ['S', 'M', 'L', 'X', 'XXL'],
-                          onChange: (String size) {},
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        Text(
-                          'Description',
-                          style: textTheme.titleMedium,
-                        ),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        Text(
-                          '''Reference site about Lorem Ipsum, giving information on its origins, as well as a random Lipsum generator Reference site about Lorem Ipsum, giving information on its origins, as well as a random Lipsum generator''',
-                          style: textTheme.bodyMedium,
-                        ),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
-          _buildAddToCartButton(textTheme)
-        ],
+              _buildAddToCartButton(
+                  textTheme, productDetailsModel.product?.price ?? '')
+            ],
+          );
+        }),
       ),
     );
   }
 
-  Widget _buildAddToCartButton(TextTheme textTheme) {
+  Widget _buildAddToCartButton(TextTheme textTheme, String price) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       decoration: BoxDecoration(
@@ -108,13 +144,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'Price',
                 style: textTheme.titleMedium,
               ),
               Text(
-                '\$100',
+                '\$$price',
                 style:
                     textTheme.titleLarge?.copyWith(color: AppColors.themeColor),
               ),
@@ -134,7 +171,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     );
   }
 
-  Row _buildProductTitleSection(TextTheme textTheme) {
+  Widget _buildProductTitleSection(
+      TextTheme textTheme, String title, int reviewRating) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -143,11 +181,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Happy New Year Special Deal Save 30%',
+                title,
                 maxLines: 2,
                 style: textTheme.titleLarge,
               ),
-              _buildReviewSection(),
+              _buildReviewSection(reviewRating),
             ],
           ),
         ),
@@ -156,24 +194,24 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         ),
         ProductQuantityButton(
           onChange: (quantity) {
-            print(quantity);
+            // TODO: Add Quantity Option
           },
         ),
       ],
     );
   }
 
-  Widget _buildReviewSection() {
+  Widget _buildReviewSection(int reviewRating) {
     return Row(
       children: [
-        const Row(
+        Row(
           children: [
-            Icon(
+            const Icon(
               Icons.star,
               color: Colors.amber,
               size: 20,
             ),
-            Text('4.8'),
+            Text('$reviewRating'),
           ],
         ),
         TextButton(
@@ -196,5 +234,155 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         ),
       ],
     );
+  }
+
+  Widget _buildShimmerEffects() {
+    return Shimmer.fromColors(
+        baseColor: Colors.grey.shade300,
+        highlightColor: Colors.grey.shade100,
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      height: 230,
+                      color: Colors.grey,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            height: 30,
+                            decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(top: 10),
+                            width: 150,
+                            height: 20,
+                            decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(top: 10),
+                            width: 80,
+                            height: 10,
+                            decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                          Row(
+                            children: [
+                              Container(
+                                margin:
+                                    const EdgeInsets.only(top: 10, right: 10),
+                                width: 100,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    color: Colors.grey,
+                                    borderRadius: BorderRadius.circular(10)),
+                              ),
+                              Container(
+                                margin:
+                                    const EdgeInsets.only(top: 10, right: 10),
+                                width: 100,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    color: Colors.grey,
+                                    borderRadius: BorderRadius.circular(10)),
+                              ),
+                              Container(
+                                margin:
+                                    const EdgeInsets.only(top: 10, right: 10),
+                                width: 100,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    color: Colors.grey,
+                                    borderRadius: BorderRadius.circular(10)),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(top: 10),
+                            width: 80,
+                            height: 10,
+                            decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                          Row(
+                            children: [
+                              Container(
+                                margin:
+                                    const EdgeInsets.only(top: 10, right: 10),
+                                width: 100,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    color: Colors.grey,
+                                    borderRadius: BorderRadius.circular(10)),
+                              ),
+                              Container(
+                                margin:
+                                    const EdgeInsets.only(top: 10, right: 10),
+                                width: 100,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    color: Colors.grey,
+                                    borderRadius: BorderRadius.circular(10)),
+                              ),
+                              Container(
+                                margin:
+                                    const EdgeInsets.only(top: 10, right: 10),
+                                width: 100,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    color: Colors.grey,
+                                    borderRadius: BorderRadius.circular(10)),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(top: 10),
+                            width: 100,
+                            height: 10,
+                            decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(top: 10),
+                            height: 200,
+                            decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 10),
+              height: 90,
+              decoration: const BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10))),
+            ),
+          ],
+        ));
   }
 }

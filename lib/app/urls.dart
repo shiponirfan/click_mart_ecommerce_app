@@ -15,4 +15,6 @@ class Urls {
 
   static String listProductByCategoryUrl(int categoryId) =>
       '$_baseUrl/ListProductByCategory/$categoryId';
+  static String productDetailsByIdUrl(String productId) =>
+      '$_baseUrl/ProductDetailsById/$productId';
 }
