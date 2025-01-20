@@ -10,6 +10,7 @@ import 'package:click_mart_ecommerce_app/features/common/ui/screens/main_navbar_
 import 'package:click_mart_ecommerce_app/features/home/ui/screens/home_screen.dart';
 import 'package:click_mart_ecommerce_app/features/products/ui/screens/product_details_screen.dart';
 import 'package:click_mart_ecommerce_app/features/products/ui/screens/product_list_by_category_screen.dart';
+import 'package:click_mart_ecommerce_app/features/products/ui/screens/product_list_by_remark_screen.dart';
 import 'package:click_mart_ecommerce_app/features/reviews/ui/screens/create_review_screen.dart';
 import 'package:click_mart_ecommerce_app/features/reviews/ui/screens/reviews_screen.dart';
 import 'package:flutter/material.dart';
@@ -47,8 +48,12 @@ class ClickMart extends StatelessWidget {
         } else if (settings.name == CategoryListScreen.route) {
           route = const CategoryListScreen();
         } else if (settings.name == ProductListByCategoryScreen.route) {
+          Map<String, dynamic> args =
+              settings.arguments as Map<String, dynamic>;
           route = ProductListByCategoryScreen(
-              categoryName: settings.arguments as String);
+            categoryName: args['categoryName'],
+            categoryId: args['categoryId'],
+          );
         } else if (settings.name == ProductDetailsScreen.route) {
           route = ProductDetailsScreen(productId: settings.arguments as String);
         } else if (settings.name == ReviewsScreen.route) {
@@ -57,6 +62,10 @@ class ClickMart extends StatelessWidget {
           route = const CreateReviewScreen();
         } else if (settings.name == CartItemScreen.route) {
           route = const CartItemScreen();
+        } else if (settings.name == ProductListByRemarkScreen.route) {
+          route = ProductListByRemarkScreen(
+            remark: settings.arguments as String,
+          );
         }
         return MaterialPageRoute(
           builder: (context) {

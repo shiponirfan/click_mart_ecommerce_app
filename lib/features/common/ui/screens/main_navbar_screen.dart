@@ -31,11 +31,11 @@ class _MainNavbarScreenState extends State<MainNavbarScreen> {
     super.initState();
     Get.find<HomeSliderController>().getBannerSlide();
     Get.find<CategoryListController>().getCategoryList();
-    Get.put(ProductListByRemarkController(), tag: 'popular')
+    Get.put(ProductListByRemarkController(), tag: 'Popular')
         .getProductListByRemark('popular');
-    Get.put(ProductListByRemarkController(), tag: 'special')
+    Get.put(ProductListByRemarkController(), tag: 'Special')
         .getProductListByRemark('special');
-    Get.put(ProductListByRemarkController(), tag: 'new')
+    Get.put(ProductListByRemarkController(), tag: 'New')
         .getProductListByRemark('new');
   }
 

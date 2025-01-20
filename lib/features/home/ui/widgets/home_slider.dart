@@ -1,9 +1,9 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:click_mart_ecommerce_app/app/app_colors.dart';
-import 'package:click_mart_ecommerce_app/features/common/ui/widgets/center_circular_progress_indicator.dart';
 import 'package:click_mart_ecommerce_app/features/home/ui/controllers/home_slider_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
 class HomeSlider extends StatelessWidget {
   const HomeSlider({
@@ -15,10 +15,7 @@ class HomeSlider extends StatelessWidget {
     final ValueNotifier<int> sliderChangeIndex = ValueNotifier(0);
     return GetBuilder<HomeSliderController>(builder: (controller) {
       if (controller.inProgress) {
-        return const SizedBox(
-          height: 164,
-          child: CenterCircularProgressIndicator(),
-        );
+        return _buildShimmerEffect(context);
       }
       return Column(
         children: [
@@ -43,7 +40,9 @@ class HomeSlider extends StatelessWidget {
                           color: AppColors.themeColor,
                           borderRadius: BorderRadius.circular(8),
                           image: DecorationImage(
-                            image: NetworkImage(banner.image ?? ''),
+                            image: NetworkImage(
+                              banner.image ?? '',
+                            ),
                             fit: BoxFit.cover,
                           )),
                       child: Column(
@@ -96,5 +95,28 @@ class HomeSlider extends StatelessWidget {
         ],
       );
     });
+  }
+
+  Widget _buildShimmerEffect(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey.shade300,
+      highlightColor: Colors.grey.shade100,
+      child: CarouselSlider(
+        options: CarouselOptions(
+          height: 164,
+          viewportFraction: 0.9,
+        ),
+        items: [
+          Container(
+            width: MediaQuery.of(context).size.width,
+            margin: const EdgeInsets.symmetric(horizontal: 5.0),
+            decoration: BoxDecoration(
+              color: AppColors.themeColor,
+              borderRadius: BorderRadius.circular(8),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

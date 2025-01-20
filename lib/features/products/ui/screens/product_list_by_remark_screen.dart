@@ -1,66 +1,58 @@
 import 'package:click_mart_ecommerce_app/features/common/ui/widgets/no_product_found.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/widgets/single_product_card.dart';
+import 'package:click_mart_ecommerce_app/features/home/ui/controllers/product_list_by_remark_controller.dart';
 import 'package:click_mart_ecommerce_app/features/products/data/models/product_model.dart';
-import 'package:click_mart_ecommerce_app/features/products/ui/controllers/product_list_by_category_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 
-class ProductListByCategoryScreen extends StatefulWidget {
-  const ProductListByCategoryScreen(
-      {super.key, required this.categoryName, required this.categoryId});
+class ProductListByRemarkScreen extends StatefulWidget {
+  const ProductListByRemarkScreen({super.key, required this.remark});
 
-  static String route = '/product-list-by-category';
-  final String categoryName;
-  final int categoryId;
+  static String route = '/product-list-by-remark';
+  final String remark;
 
   @override
-  State<ProductListByCategoryScreen> createState() =>
-      _ProductListByCategoryScreenState();
+  State<ProductListByRemarkScreen> createState() =>
+      _ProductListByRemarkScreenState();
 }
 
-class _ProductListByCategoryScreenState
-    extends State<ProductListByCategoryScreen> {
-  @override
-  void initState() {
-    super.initState();
-    Get.find<ProductListByCategoryController>()
-        .getProductListByCategory(widget.categoryId);
-  }
-
+class _ProductListByRemarkScreenState extends State<ProductListByRemarkScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.categoryName),
+        title: Text(widget.remark),
       ),
-      body: GetBuilder<ProductListByCategoryController>(builder: (controller) {
-        if (controller.inProgress) {
-          return _buildProductByCategoryShimmerEffect();
-        }
-        if(controller.productList!.isEmpty){
-          return const NoProductFound();
-        }
-        return GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
-              mainAxisExtent: 170),
-          itemBuilder: (context, index) {
-            ProductModel productModel = controller.productList![index];
-            return SingleProductCard(
-              productModel: productModel,
+      body: GetBuilder<ProductListByRemarkController>(
+          tag: 'Popular',
+          builder: (controller) {
+            if (controller.inProgress) {
+              return _buildProductByRemarkShimmerEffect();
+            }
+            if(controller.productList!.isEmpty){
+              return const NoProductFound();
+            }
+            return GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10,
+                  mainAxisExtent: 170),
+              itemBuilder: (context, index) {
+                ProductModel productModel = controller.productList![index];
+                return SingleProductCard(
+                  productModel: productModel,
+                );
+              },
+              itemCount: controller.productList!.length,
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             );
-          },
-          itemCount: controller.productList!.length,
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        );
-      }),
+          }),
     );
   }
 
-  Widget _buildProductByCategoryShimmerEffect() {
+  Widget _buildProductByRemarkShimmerEffect() {
     return Shimmer.fromColors(
         baseColor: Colors.grey.shade300,
         highlightColor: Colors.grey.shade100,

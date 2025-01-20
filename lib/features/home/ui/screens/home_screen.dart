@@ -4,18 +4,19 @@ import 'package:click_mart_ecommerce_app/features/category/data/models/category_
 import 'package:click_mart_ecommerce_app/features/category/ui/controllers/category_list_controller.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/controllers/main_navbar_controller.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/widgets/category_card_widget.dart';
-import 'package:click_mart_ecommerce_app/features/common/ui/widgets/center_circular_progress_indicator.dart';
+import 'package:click_mart_ecommerce_app/features/common/ui/widgets/no_product_found.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/widgets/single_product_card.dart';
 import 'package:click_mart_ecommerce_app/features/home/ui/controllers/product_list_by_remark_controller.dart';
 import 'package:click_mart_ecommerce_app/features/home/ui/widgets/appbar_icon_button.dart';
 import 'package:click_mart_ecommerce_app/features/home/ui/widgets/heading_title_with_button.dart';
 import 'package:click_mart_ecommerce_app/features/home/ui/widgets/home_slider.dart';
 import 'package:click_mart_ecommerce_app/features/products/data/models/product_model.dart';
-import 'package:click_mart_ecommerce_app/features/products/ui/screens/product_list_by_category_screen.dart';
+import 'package:click_mart_ecommerce_app/features/products/ui/screens/product_list_by_remark_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -54,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             GetBuilder<CategoryListController>(builder: (controller) {
               if (controller.inProgress) {
-                return const CenterCircularProgressIndicator();
+                return _buildCategoryShimmerEffect();
               }
               return SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -69,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
             HeadingTitleWithButton(
               title: 'Popular',
               onPressed: () {
-                Get.toNamed(ProductListByCategoryScreen.route,
+                Get.toNamed(ProductListByRemarkScreen.route,
                     arguments: 'Popular');
               },
             ),
@@ -77,10 +78,13 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 16,
             ),
             GetBuilder<ProductListByRemarkController>(
-                tag: 'popular',
+                tag: 'Popular',
                 builder: (controller) {
                   if (controller.inProgress) {
-                    return const CenterCircularProgressIndicator();
+                    return _buildProductByRemarkShimmerEffect();
+                  }
+                  if (controller.productList!.isEmpty) {
+                    return const NoProductFound();
                   }
                   return SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
@@ -94,16 +98,22 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             HeadingTitleWithButton(
               title: 'Special',
-              onPressed: () {},
+              onPressed: () {
+                Get.toNamed(ProductListByRemarkScreen.route,
+                    arguments: 'Special');
+              },
             ),
             const SizedBox(
               height: 16,
             ),
             GetBuilder<ProductListByRemarkController>(
-                tag: 'special',
+                tag: 'Special',
                 builder: (controller) {
                   if (controller.inProgress) {
-                    return const CenterCircularProgressIndicator();
+                    return _buildProductByRemarkShimmerEffect();
+                  }
+                  if (controller.productList!.isEmpty) {
+                    return const NoProductFound();
                   }
                   return SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
@@ -117,16 +127,21 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             HeadingTitleWithButton(
               title: 'New',
-              onPressed: () {},
+              onPressed: () {
+                Get.toNamed(ProductListByRemarkScreen.route, arguments: 'New');
+              },
             ),
             const SizedBox(
               height: 16,
             ),
             GetBuilder<ProductListByRemarkController>(
-                tag: 'new',
+                tag: 'New',
                 builder: (controller) {
                   if (controller.inProgress) {
-                    return const CenterCircularProgressIndicator();
+                    return _buildProductByRemarkShimmerEffect();
+                  }
+                  if (controller.productList!.isEmpty) {
+                    return const NoProductFound();
                   }
                   return SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
@@ -212,5 +227,116 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ],
     );
+  }
+
+  Widget _buildCategoryShimmerEffect() {
+    List<Widget> getCategorySimmerEffectList() {
+      List<Widget> list = [];
+      for (int i = 0; i < 10; i++) {
+        list.add(Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: Column(
+              children: [
+                Container(
+                  width: 70,
+                  height: 70,
+                  decoration: BoxDecoration(
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  width: 70,
+                  height: 12,
+                  decoration: BoxDecoration(
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ],
+            )));
+      }
+      return list;
+    }
+
+    return Shimmer.fromColors(
+        baseColor: Colors.grey.shade300,
+        highlightColor: Colors.grey.shade100,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: getCategorySimmerEffectList(),
+          ),
+        ));
+  }
+
+  Widget _buildProductByRemarkShimmerEffect() {
+    List<Widget> getProductShimmerEffectList() {
+      List<Widget> list = [];
+      for (int i = 0; i < 10; i++) {
+        list.add(Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: SizedBox(
+              width: 120,
+              child: Column(
+                children: [
+                  Container(
+                    width: 120,
+                    height: 100,
+                    decoration: const BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10),
+                      ),
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(top: 8),
+                        height: 12,
+                        decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 8),
+                        height: 12,
+                        width: 70,
+                        decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 8),
+                        height: 12,
+                        decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            )));
+      }
+      return list;
+    }
+
+    return Shimmer.fromColors(
+        baseColor: Colors.grey.shade300,
+        highlightColor: Colors.grey.shade100,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: getProductShimmerEffectList(),
+          ),
+        ));
   }
 }
