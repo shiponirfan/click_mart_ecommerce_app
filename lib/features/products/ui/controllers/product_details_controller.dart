@@ -1,7 +1,7 @@
 import 'package:click_mart_ecommerce_app/app/urls.dart';
 import 'package:click_mart_ecommerce_app/features/products/data/models/product_details_list_model.dart';
 import 'package:click_mart_ecommerce_app/services/network_response.dart';
-import 'package:click_mart_ecommerce_app/services/netwotk_caller.dart';
+import 'package:click_mart_ecommerce_app/services/network_caller.dart';
 import 'package:get/get.dart';
 
 class ProductDetailsController extends GetxController {

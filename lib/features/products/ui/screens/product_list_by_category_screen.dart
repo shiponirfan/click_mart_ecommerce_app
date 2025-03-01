@@ -10,7 +10,7 @@ class ProductListByCategoryScreen extends StatefulWidget {
   const ProductListByCategoryScreen(
       {super.key, required this.categoryName, required this.categoryId});
 
-  static String route = '/product-list-by-category';
+  static String name = '/product-list-by-category';
   final String categoryName;
   final int categoryId;
 

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class CreateReviewScreen extends StatefulWidget {
   const CreateReviewScreen({super.key});
 
-  static String route = '/product/create-reviews';
+  static String name = '/product/create-reviews';
 
   @override
   State<CreateReviewScreen> createState() => _CreateReviewScreenState();

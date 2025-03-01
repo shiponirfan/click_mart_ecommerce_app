@@ -3,31 +3,38 @@ import 'package:click_mart_ecommerce_app/features/auth/data/models/profile_data_
 import 'package:click_mart_ecommerce_app/features/auth/data/models/profile_model.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/controllers/auth_controller.dart';
 import 'package:click_mart_ecommerce_app/services/network_response.dart';
-import 'package:click_mart_ecommerce_app/services/netwotk_caller.dart';
+import 'package:click_mart_ecommerce_app/services/network_caller.dart';
 import 'package:get/get.dart';
 
-class CompleteProfileController extends GetxController {
+class LoginScreenController extends GetxController {
   bool _inProgress = false;
   String? _errorMessage;
+  String? _successMessage;
 
   bool get inProgress => _inProgress;
 
   String? get errorMessage => _errorMessage;
-  ProfileModel? profileModel;
 
-  Future<bool> createProfile(
-      {required Map<String, dynamic> body, required String token}) async {
+  String? get successMessage => _successMessage;
+
+  Future<bool> authLogin(
+      {required String email, required String password}) async {
+    Map<String, String> body = {"email": email, "password": password};
+
     bool isSuccess = false;
     _errorMessage = null;
     _inProgress = true;
     update();
-    final NetworkResponse response = await Get.find<NetworkCaller>()
-        .postRequest(Urls.createProfileUrl, body: body, accessToken: token);
+
+    final NetworkResponse response =
+        await Get.find<NetworkCaller>().postRequest(Urls.loginUrl, body: body);
     if (response.isSuccess) {
       ProfileDataModel profileDataModel =
           ProfileDataModel.fromJson(response.responseData);
-      profileModel = profileDataModel.profileData;
-      await Get.find<AuthController>().saveUserData(token, profileModel!);
+      ProfileModel? profileModel = profileDataModel.profileData;
+      await Get.find<AuthController>()
+          .saveUserData(profileModel!.token!, profileModel.user!);
+      _successMessage = profileDataModel.msg;
       isSuccess = true;
       update();
     } else {

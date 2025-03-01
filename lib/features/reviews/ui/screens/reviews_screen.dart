@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 class ReviewsScreen extends StatefulWidget {
   const ReviewsScreen({super.key});
 
-  static String route = '/product/reviews';
+  static String name = '/product/reviews';
 
   @override
   State<ReviewsScreen> createState() => _ReviewsScreenState();
@@ -87,7 +87,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
           ),
           IconButton(
             onPressed: () {
-              Get.toNamed(CreateReviewScreen.route);
+              Get.toNamed(CreateReviewScreen.name);
             },
             icon: const Icon(Icons.add),
             style: IconButton.styleFrom(

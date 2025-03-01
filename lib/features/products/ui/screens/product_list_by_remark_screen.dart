@@ -9,7 +9,7 @@ import 'package:shimmer/shimmer.dart';
 class ProductListByRemarkScreen extends StatefulWidget {
   const ProductListByRemarkScreen({super.key, required this.remark});
 
-  static String route = '/product-list-by-remark';
+  static String name = '/product-list-by-remark';
   final String remark;
 
   @override

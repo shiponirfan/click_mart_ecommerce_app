@@ -1,30 +1,33 @@
 import 'package:click_mart_ecommerce_app/app/app_colors.dart';
-import 'package:click_mart_ecommerce_app/features/auth/data/models/profile_model.dart';
-import 'package:click_mart_ecommerce_app/features/auth/ui/controllers/complete_profile_controller.dart';
+import 'package:click_mart_ecommerce_app/features/auth/ui/controllers/signup_screen_controller.dart';
+import 'package:click_mart_ecommerce_app/features/auth/ui/screens/otp_verification_screen.dart';
 import 'package:click_mart_ecommerce_app/features/auth/ui/widgets/app_logo_widget.dart';
-import 'package:click_mart_ecommerce_app/features/common/ui/screens/main_navbar_screen.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/widgets/show_snackbar_message.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 
-class CompleteProfileScreen extends StatefulWidget {
-  const CompleteProfileScreen({super.key, required this.accessToken});
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({
+    super.key,
+  });
 
-  static String route = 'complete-profile-screen';
-  final String accessToken;
+  static String name = '/signup-screen';
 
   @override
-  State<CompleteProfileScreen> createState() => _CompleteProfileScreenState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
+class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _firstNameTEController = TextEditingController();
   final TextEditingController _lastNameTEController = TextEditingController();
-  final TextEditingController _mobileTEController = TextEditingController();
+  final TextEditingController _emailTEController = TextEditingController();
+  final TextEditingController _passwordTEController = TextEditingController();
+  final TextEditingController _phoneTEController = TextEditingController();
   final TextEditingController _cityTEController = TextEditingController();
-  final TextEditingController _addressTEController = TextEditingController();
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final CompleteProfileController _completeProfileController =
-      CompleteProfileController();
+  final SignupScreenController _signupScreenController =
+      SignupScreenController();
 
   @override
   Widget build(BuildContext context) {
@@ -37,14 +40,14 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
             children: <Widget>[
               const AppLogoWidget(),
               Text(
-                'Complete Profile',
+                'Singup to Click Mart',
                 style: textTheme.headlineMedium,
               ),
               const SizedBox(
                 height: 5,
               ),
               Text(
-                'Get started with us with your details',
+                'Get started with us',
                 style: textTheme.labelLarge,
               ),
               const SizedBox(
@@ -57,7 +60,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
               ElevatedButton(
                 onPressed: _onPressMoveToNextScreen,
                 child: const Text(
-                  'Complete',
+                  'Signup',
                 ),
               ),
             ],
@@ -111,21 +114,67 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
             height: 18,
           ),
           TextFormField(
-            controller: _mobileTEController,
+            controller: _emailTEController,
             style: textTheme.labelLarge?.copyWith(
               color: AppColors.primaryTextColor,
             ),
             decoration: const InputDecoration(
-              hintText: 'Mobile',
+              hintText: 'Email',
+            ),
+            keyboardType: TextInputType.emailAddress,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: (String? value) {
+              if (value?.trim().isEmpty ?? true) {
+                return 'Enter your email address';
+              }
+              if (!EmailValidator.validate(value!)) {
+                return 'Enter a valid email address';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(
+            height: 18,
+          ),
+          TextFormField(
+            controller: _passwordTEController,
+            style: textTheme.labelLarge?.copyWith(
+              color: AppColors.primaryTextColor,
+            ),
+            decoration: const InputDecoration(
+              hintText: 'Password',
+            ),
+            keyboardType: TextInputType.emailAddress,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: (String? value) {
+              if (value?.isEmpty ?? true) {
+                return 'Enter your password';
+              }
+              if (value!.length < 6) {
+                return 'Password must be 6 characters long';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(
+            height: 18,
+          ),
+          TextFormField(
+            controller: _phoneTEController,
+            style: textTheme.labelLarge?.copyWith(
+              color: AppColors.primaryTextColor,
+            ),
+            decoration: const InputDecoration(
+              hintText: 'Phone',
             ),
             keyboardType: TextInputType.phone,
             autovalidateMode: AutovalidateMode.onUserInteraction,
             validator: (String? value) {
               if (value?.trim().isEmpty ?? true) {
-                return 'Enter your mobile number';
+                return 'Enter your phone number';
               }
               if (!RegExp(r'^01[3-9]\d{8}$').hasMatch(value!)) {
-                return 'Enter valid mobile number';
+                return 'Enter valid phone number';
               }
               return null;
             },
@@ -149,26 +198,6 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
               return null;
             },
           ),
-          const SizedBox(
-            height: 18,
-          ),
-          TextFormField(
-            controller: _addressTEController,
-            maxLines: 3,
-            style: textTheme.labelLarge?.copyWith(
-              color: AppColors.primaryTextColor,
-            ),
-            decoration: const InputDecoration(
-              hintText: 'Shipping Address',
-            ),
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            validator: (String? value) {
-              if (value?.trim().isEmpty ?? true) {
-                return 'Enter your shipping address';
-              }
-              return null;
-            },
-          ),
         ],
       ),
     );
@@ -176,37 +205,29 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
 
   void _onPressMoveToNextScreen() async {
     if (_formKey.currentState!.validate()) {
-      String fullName =
-          '${_firstNameTEController.text.trim()} ${_lastNameTEController.text.trim()}';
-      Map<String, dynamic> body = ProfileModel(
-        cusName: fullName,
-        cusAdd: _addressTEController.text.trim(),
-        cusCity: _cityTEController.text.trim(),
-        cusState: _cityTEController.text.trim(),
-        cusPostcode: '0',
-        cusCountry: 'Bangladesh',
-        cusPhone: _mobileTEController.text.trim(),
-        cusFax: _mobileTEController.text.trim(),
-        shipName: fullName,
-        shipAdd: _addressTEController.text.trim(),
-        shipCity: _cityTEController.text.trim(),
-        shipState: _cityTEController.text.trim(),
-        shipPostcode: '0',
-        shipCountry: 'Bangladesh',
-        shipPhone: _mobileTEController.text.trim(),
-      ).toJson();
+      Map<String, dynamic> userBody = {
+        "first_name": _firstNameTEController.value.text.trim(),
+        "last_name": _lastNameTEController.value.text.trim(),
+        "email": _emailTEController.value.text.trim(),
+        "password": _passwordTEController.value.text,
+        "phone": _phoneTEController.value.text.trim(),
+        "city": _cityTEController.value.text.trim(),
+      };
 
-      bool isSuccess = await _completeProfileController.createProfile(
-          body: body, token: widget.accessToken);
+      bool isSuccess = await _signupScreenController.authSignup(body: userBody);
       if (isSuccess) {
         if (mounted) {
-          Navigator.pushNamedAndRemoveUntil(
-              context, MainNavbarScreen.route, (predicate) => false);
+          showSnackBarMessage(context, _signupScreenController.successMessage!);
+          Navigator.pushNamed(
+            context,
+            OtpVerificationScreen.name,
+            arguments: _emailTEController.value.text.trim(),
+          );
         }
       } else {
         if (mounted) {
           showSnackBarMessage(
-              context, _completeProfileController.errorMessage!, true);
+              context, _signupScreenController.errorMessage!, true);
         }
       }
     }
@@ -216,9 +237,10 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
   void dispose() {
     _firstNameTEController.dispose();
     _lastNameTEController.dispose();
-    _mobileTEController.dispose();
+    _emailTEController.dispose();
+    _passwordTEController.dispose();
+    _phoneTEController.dispose();
     _cityTEController.dispose();
-    _addressTEController.dispose();
     super.dispose();
   }
 }

@@ -17,7 +17,7 @@ class CategoryCardWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Get.toNamed(
-          ProductListByCategoryScreen.route,
+          ProductListByCategoryScreen.name,
           arguments: {
             'categoryName': categoryModel.categoryName ?? '',
             'categoryId': categoryModel.id!,

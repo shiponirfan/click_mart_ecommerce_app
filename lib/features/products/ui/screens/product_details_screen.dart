@@ -1,7 +1,6 @@
 import 'package:click_mart_ecommerce_app/app/app_colors.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/controllers/main_navbar_controller.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/screens/main_navbar_screen.dart';
-import 'package:click_mart_ecommerce_app/features/common/ui/widgets/center_circular_progress_indicator.dart';
 import 'package:click_mart_ecommerce_app/features/products/data/models/product_details_list_model.dart';
 import 'package:click_mart_ecommerce_app/features/products/ui/controllers/product_details_controller.dart';
 import 'package:click_mart_ecommerce_app/features/products/ui/widgets/product_color_option_widget.dart';
@@ -17,7 +16,7 @@ import 'package:shimmer/shimmer.dart';
 class ProductDetailsScreen extends StatefulWidget {
   const ProductDetailsScreen({super.key, required this.productId});
 
-  static String route = '/product/product-details';
+  static String name = '/product/product-details';
   final String productId;
 
   @override
@@ -161,7 +160,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             width: 140,
             child: ElevatedButton(
                 onPressed: () {
-                  Get.toNamed(MainNavbarScreen.route);
+                  Get.toNamed(MainNavbarScreen.name);
                   Get.find<MainNavbarController>().moveToCartItemScreen();
                 },
                 child: const Text('Add To Cart')),
@@ -216,7 +215,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         ),
         TextButton(
             onPressed: () {
-              Get.toNamed(ReviewsScreen.route);
+              Get.toNamed(ReviewsScreen.name);
             },
             child: const Text('Reviews')),
         Container(

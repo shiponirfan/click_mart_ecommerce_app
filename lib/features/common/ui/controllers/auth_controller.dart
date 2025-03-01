@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:click_mart_ecommerce_app/features/auth/data/models/profile_data_model.dart';
 import 'package:click_mart_ecommerce_app/features/auth/data/models/profile_model.dart';
+import 'package:click_mart_ecommerce_app/features/auth/data/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthController {
@@ -11,10 +12,11 @@ class AuthController {
   String? userToken;
   ProfileModel? profileModel;
 
-  Future<void> saveUserData(String token, ProfileModel model) async {
+  Future<void> saveUserData(String token, UserModel model) async {
+    await clearUserData();
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     await sharedPreferences.setString(_userTokenKey, token);
-    await sharedPreferences.setString(_userProfileKey, jsonEncode(model));
+    await sharedPreferences.setString(_userProfileKey, jsonEncode(model.toJson()));
     await getUserData();
   }
 

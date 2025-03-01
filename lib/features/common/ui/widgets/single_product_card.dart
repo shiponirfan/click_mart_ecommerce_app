@@ -17,7 +17,7 @@ class SingleProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.toNamed(ProductDetailsScreen.route, arguments: '1');
+        Get.toNamed(ProductDetailsScreen.name, arguments: '1');
       },
       child: SizedBox(
         width: 120,

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
-  static String route = '/';
+  static String name = '/';
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -20,7 +20,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _moveToNextScreen() async {
     await Future.delayed(const Duration(seconds: 2));
-    Navigator.pushReplacementNamed(context, MainNavbarScreen.route);
+    if (mounted) {
+      Navigator.pushReplacementNamed(context, MainNavbarScreen.name);
+    }
   }
 
   @override

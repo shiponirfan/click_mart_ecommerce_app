@@ -10,7 +10,7 @@ import 'package:shimmer/shimmer.dart';
 class CategoryListScreen extends StatelessWidget {
   const CategoryListScreen({super.key});
 
-  static String route = '/category-screen';
+  static String name = '/category';
 
   @override
   Widget build(BuildContext context) {

@@ -1,27 +1,27 @@
 import 'package:click_mart_ecommerce_app/app/app_colors.dart';
-import 'package:click_mart_ecommerce_app/features/auth/ui/controllers/email_verification_controller.dart';
-import 'package:click_mart_ecommerce_app/features/auth/ui/screens/otp_verification_screen.dart';
+import 'package:click_mart_ecommerce_app/features/auth/ui/controllers/login_screen_controller.dart';
 import 'package:click_mart_ecommerce_app/features/auth/ui/widgets/app_logo_widget.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/widgets/show_snackbar_message.dart';
+import 'package:click_mart_ecommerce_app/features/home/ui/screens/home_screen.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class EmailVerificationScreen extends StatefulWidget {
-  const EmailVerificationScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
-  static String route = 'email-verification';
+  static String name = '/login';
 
   @override
-  State<EmailVerificationScreen> createState() =>
-      _EmailVerificationScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
+class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailTEController = TextEditingController();
+  final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final EmailVerificationController _emailVerificationController =
-      Get.find<EmailVerificationController>();
+  final LoginScreenController _loginScreenController =
+      Get.find<LoginScreenController>();
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   height: 5,
                 ),
                 Text(
-                  'Please Enter Your Email Address',
+                  'Please Enter Your Email & Password',
                   style: textTheme.labelLarge,
                 ),
                 const SizedBox(
@@ -58,7 +58,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                     color: AppColors.primaryTextColor,
                   ),
                   decoration: const InputDecoration(
-                    hintText: 'Email Address',
+                    hintText: 'Email',
                   ),
                   keyboardType: TextInputType.emailAddress,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -73,16 +73,39 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   },
                 ),
                 const SizedBox(
+                  height: 10,
+                ),
+                TextFormField(
+                  controller: _passwordTEController,
+                  style: textTheme.labelLarge?.copyWith(
+                    color: AppColors.primaryTextColor,
+                  ),
+                  decoration: const InputDecoration(
+                    hintText: 'Password',
+                  ),
+                  keyboardType: TextInputType.emailAddress,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (String? value) {
+                    if (value?.isEmpty ?? true) {
+                      return 'Enter your password';
+                    }
+                    if (value!.length < 6) {
+                      return 'Password must be 6 characters long';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(
                   height: 24,
                 ),
-                GetBuilder<EmailVerificationController>(builder: (controller) {
+                GetBuilder<LoginScreenController>(builder: (controller) {
                   if (controller.inProgress) {
                     return const CircularProgressIndicator();
                   }
                   return ElevatedButton(
-                    onPressed: _onPressMoveToNextScreen,
+                    onPressed: _onPressLogin,
                     child: const Text(
-                      'Next',
+                      'Login',
                     ),
                   );
                 }),
@@ -94,19 +117,24 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
     );
   }
 
-  void _onPressMoveToNextScreen() async {
+  void _onPressLogin() async {
     if (_formKey.currentState!.validate()) {
-      bool isSuccess = await _emailVerificationController
-          .verifyEmail(_emailTEController.text.trim());
+      bool isSuccess = await _loginScreenController.authLogin(
+          email: _emailTEController.value.text.trim(),
+          password: _passwordTEController.value.text);
       if (isSuccess) {
         if (mounted) {
-          Navigator.pushNamed(context, OtpVerificationScreen.route,
-              arguments: _emailTEController.text.trim());
+          showSnackBarMessage(
+            context,
+            _loginScreenController.successMessage!,
+          );
+          Navigator.pushNamedAndRemoveUntil(
+              context, HomeScreen.name, (route) => false);
         }
       } else {
         if (mounted) {
           showSnackBarMessage(
-              context, _emailVerificationController.errorMessage!, true);
+              context, _loginScreenController.errorMessage!, true);
         }
       }
     }
@@ -115,6 +143,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   @override
   void dispose() {
     _emailTEController.dispose();
+    _passwordTEController.dispose();
     super.dispose();
   }
 }

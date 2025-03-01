@@ -1,7 +1,7 @@
 import 'package:click_mart_ecommerce_app/app/app_theme_data.dart';
 import 'package:click_mart_ecommerce_app/app/controller_binder.dart';
-import 'package:click_mart_ecommerce_app/features/auth/ui/screens/complete_profile_screen.dart';
-import 'package:click_mart_ecommerce_app/features/auth/ui/screens/email_verification_screen.dart';
+import 'package:click_mart_ecommerce_app/features/auth/ui/screens/signup_screen.dart';
+import 'package:click_mart_ecommerce_app/features/auth/ui/screens/login_screen.dart';
 import 'package:click_mart_ecommerce_app/features/auth/ui/screens/otp_verification_screen.dart';
 import 'package:click_mart_ecommerce_app/features/auth/ui/screens/splash_screen.dart';
 import 'package:click_mart_ecommerce_app/features/cart/ui/screens/cart_item_screen.dart';
@@ -25,44 +25,42 @@ class ClickMart extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppThemeData.lightThemeData,
       darkTheme: AppThemeData.darkThemeData,
-      initialRoute: SplashScreen.route,
+      initialRoute: SplashScreen.name,
       initialBinding: ControllerBinder(),
       onGenerateRoute: (RouteSettings settings) {
         late Widget route;
-        if (settings.name == SplashScreen.route) {
+        if (settings.name == SplashScreen.name) {
           route = const SplashScreen();
-        } else if (settings.name == EmailVerificationScreen.route) {
-          route = const EmailVerificationScreen();
-        } else if (settings.name == OtpVerificationScreen.route) {
+        } else if (settings.name == LoginScreen.name) {
+          route = const LoginScreen();
+        } else if (settings.name == OtpVerificationScreen.name) {
           route = OtpVerificationScreen(
             email: settings.arguments as String,
           );
-        } else if (settings.name == CompleteProfileScreen.route) {
-          route = CompleteProfileScreen(
-            accessToken: settings.arguments as String,
-          );
-        } else if (settings.name == HomeScreen.route) {
+        } else if (settings.name == SignupScreen.name) {
+          route = const SignupScreen();
+        } else if (settings.name == HomeScreen.name) {
           route = const HomeScreen();
-        } else if (settings.name == MainNavbarScreen.route) {
+        } else if (settings.name == MainNavbarScreen.name) {
           route = const MainNavbarScreen();
-        } else if (settings.name == CategoryListScreen.route) {
+        } else if (settings.name == CategoryListScreen.name) {
           route = const CategoryListScreen();
-        } else if (settings.name == ProductListByCategoryScreen.route) {
+        } else if (settings.name == ProductListByCategoryScreen.name) {
           Map<String, dynamic> args =
               settings.arguments as Map<String, dynamic>;
           route = ProductListByCategoryScreen(
             categoryName: args['categoryName'],
             categoryId: args['categoryId'],
           );
-        } else if (settings.name == ProductDetailsScreen.route) {
+        } else if (settings.name == ProductDetailsScreen.name) {
           route = ProductDetailsScreen(productId: settings.arguments as String);
-        } else if (settings.name == ReviewsScreen.route) {
+        } else if (settings.name == ReviewsScreen.name) {
           route = const ReviewsScreen();
-        } else if (settings.name == CreateReviewScreen.route) {
+        } else if (settings.name == CreateReviewScreen.name) {
           route = const CreateReviewScreen();
-        } else if (settings.name == CartItemScreen.route) {
+        } else if (settings.name == CartItemScreen.name) {
           route = const CartItemScreen();
-        } else if (settings.name == ProductListByRemarkScreen.route) {
+        } else if (settings.name == ProductListByRemarkScreen.name) {
           route = ProductListByRemarkScreen(
             remark: settings.arguments as String,
           );

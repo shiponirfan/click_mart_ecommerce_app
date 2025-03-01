@@ -12,7 +12,7 @@ import 'package:get/get.dart';
 class MainNavbarScreen extends StatefulWidget {
   const MainNavbarScreen({super.key});
 
-  static String route = 'main-navbar-screen';
+  static String name = '/main-navbar';
 
   @override
   State<MainNavbarScreen> createState() => _MainNavbarScreenState();

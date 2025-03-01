@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:click_mart_ecommerce_app/app/app_colors.dart';
 import 'package:click_mart_ecommerce_app/app/app_constants.dart';
 import 'package:click_mart_ecommerce_app/features/auth/ui/controllers/otp_verification_controller.dart';
-import 'package:click_mart_ecommerce_app/features/auth/ui/controllers/profile_controller.dart';
-import 'package:click_mart_ecommerce_app/features/auth/ui/screens/complete_profile_screen.dart';
 import 'package:click_mart_ecommerce_app/features/auth/ui/widgets/app_logo_widget.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/screens/main_navbar_screen.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/widgets/show_snackbar_message.dart';
@@ -15,7 +13,7 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 class OtpVerificationScreen extends StatefulWidget {
   const OtpVerificationScreen({super.key, required this.email});
 
-  static String route = 'otp-verification-screen';
+  static String name = '/otp-verification';
   final String email;
 
   @override
@@ -84,7 +82,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   height: 24,
                 ),
                 PinCodeTextField(
-                  length: 6,
+                  length: 4,
                   obscureText: false,
                   animationType: AnimationType.fade,
                   animationDuration: const Duration(milliseconds: 300),
@@ -92,7 +90,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   keyboardType: TextInputType.number,
                   controller: _otpTEController,
                   validator: (value) {
-                    if (_otpTEController.text.length < 6) {
+                    if (_otpTEController.text.length < 4) {
                       return 'Enter your OTP';
                     }
                     return null;
@@ -144,18 +142,20 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
   void _onPressMoveToNextScreen() async {
     if (_formKey.currentState!.validate()) {
-      bool isSuccess = await _otpVerificationController.verifyOtp(
-          widget.email, _otpTEController.text);
+      Map<String, dynamic> body = {
+        "email": widget.email,
+        "otp": _otpTEController.value.text,
+      };
+
+      bool isSuccess = await _otpVerificationController.verifyOtp(body);
       if (isSuccess) {
-        if (Get.find<ProfileController>().shouldNavigateToProfileScreen) {
-          if (mounted) {
-            Navigator.pushNamed(context, CompleteProfileScreen.route,
-                arguments: _otpVerificationController.accessToken);
-          }
-        } else {
-          if (mounted) {
-            Navigator.pushNamedAndRemoveUntil(context, MainNavbarScreen.route, (predicate)=> false);
-          }
+        if (mounted) {
+          showSnackBarMessage(
+            context,
+            _otpVerificationController.successMessage!,
+          );
+          Navigator.pushNamedAndRemoveUntil(
+              context, MainNavbarScreen.name, (predicate) => false);
         }
       } else {
         if (mounted) {

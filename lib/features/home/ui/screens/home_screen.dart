@@ -21,7 +21,7 @@ import 'package:shimmer/shimmer.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
-  static String route = '/home';
+  static String name = '/home';
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -70,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
             HeadingTitleWithButton(
               title: 'Popular',
               onPressed: () {
-                Get.toNamed(ProductListByRemarkScreen.route,
+                Get.toNamed(ProductListByRemarkScreen.name,
                     arguments: 'Popular');
               },
             ),
@@ -99,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
             HeadingTitleWithButton(
               title: 'Special',
               onPressed: () {
-                Get.toNamed(ProductListByRemarkScreen.route,
+                Get.toNamed(ProductListByRemarkScreen.name,
                     arguments: 'Special');
               },
             ),
@@ -128,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
             HeadingTitleWithButton(
               title: 'New',
               onPressed: () {
-                Get.toNamed(ProductListByRemarkScreen.route, arguments: 'New');
+                Get.toNamed(ProductListByRemarkScreen.name, arguments: 'New');
               },
             ),
             const SizedBox(
