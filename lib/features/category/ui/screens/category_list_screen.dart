@@ -24,13 +24,12 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_loadMoreData);
-  }
-
-  void _loadMoreData() {
-    if (_scrollController.position.extentAfter < 300) {
-      _categoryListController.getCategoryList();
-    }
+    _scrollController.addListener(() {
+      if (_scrollController.position.extentAfter < 300 &&
+          !_categoryListController.inProgress) {
+        _categoryListController.getCategoryList();
+      }
+    });
   }
 
   @override
@@ -42,7 +41,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
       },
       child: RefreshIndicator(
         onRefresh: () {
-          return Get.find<CategoryListController>().getCategoryList();
+          return Get.find<CategoryListController>().refreshCategoryList();
         },
         child: Scaffold(
           appBar: AppBar(

@@ -9,8 +9,8 @@ class CategoryListController extends GetxController {
   bool _inProgress = false;
 
   bool get inProgress => _inProgress;
-  bool get initialProgress => _page == 1 && _inProgress;
 
+  bool get initialProgress => _page == 1 && _inProgress;
 
   String? _errorMessage;
 
@@ -20,18 +20,17 @@ class CategoryListController extends GetxController {
 
   List<CategoryModel>? get categoryList => _categoryList;
 
-  final int _count = 10;
+  final int _count = 30;
   int _page = 0;
   int? _lastPage;
 
   Future<bool> getCategoryList() async {
+    bool isSuccess = false;
     _page++;
-
     if (_lastPage != null && _page > _lastPage!) return false;
 
-    bool isSuccess = false;
     _inProgress = true;
-    _categoryList = null;
+    _categoryList = _page == 1 ? [] : _categoryList;
     update();
 
     Map<String, dynamic> queryParams = {
@@ -41,17 +40,20 @@ class CategoryListController extends GetxController {
 
     NetworkResponse response = await Get.find<NetworkCaller>()
         .getRequest(Urls.categoryListUrl, queryParams: queryParams);
+
     if (response.isSuccess) {
       CategoryListModel categoryListModel =
           CategoryListModel.fromJson(response.responseData);
-      _categoryList = categoryListModel.categoryList!.results;
 
-      if (categoryListModel.categoryList!.lastPage != null) {
-        _lastPage = categoryListModel.categoryList!.lastPage;
+      if (_page == 1) {
+        _categoryList = categoryListModel.categoryList!.results;
+      } else {
+        _categoryList!.addAll(categoryListModel.categoryList!.results ?? []);
       }
 
+      _lastPage = categoryListModel.categoryList!.lastPage;
+
       isSuccess = true;
-      update();
     } else {
       _errorMessage = response.errorMessage;
     }
@@ -59,5 +61,12 @@ class CategoryListController extends GetxController {
     _inProgress = false;
     update();
     return isSuccess;
+  }
+
+  Future<bool> refreshCategoryList() async {
+    _page = 0;
+    _lastPage = null;
+    _categoryList?.clear();
+    return getCategoryList();
   }
 }
