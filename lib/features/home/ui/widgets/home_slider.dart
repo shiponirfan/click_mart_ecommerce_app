@@ -32,36 +32,32 @@ class HomeSlider extends StatelessWidget {
               return Builder(
                 builder: (BuildContext context) {
                   return Container(
-                      width: MediaQuery.of(context).size.width,
-                      margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                      alignment: AlignmentDirectional.centerStart,
-                      padding: const EdgeInsets.only(left: 10),
-                      decoration: BoxDecoration(
-                          color: AppColors.themeColor,
-                          borderRadius: BorderRadius.circular(8),
-                          image: DecorationImage(
-                            image: NetworkImage(
-                              banner.image ?? '',
-                            ),
-                            fit: BoxFit.cover,
-                          )),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            banner.title ?? '',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                            ),
+                    width: MediaQuery.of(context).size.width,
+                    margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                    alignment: AlignmentDirectional.centerStart,
+                    padding: const EdgeInsets.only(left: 10),
+                    decoration: BoxDecoration(
+                        color: AppColors.themeColor,
+                        borderRadius: BorderRadius.circular(8),
+                        image: DecorationImage(
+                          image: NetworkImage(
+                            banner.photoUrl ?? '',
                           ),
-                          Text(
-                            banner.price ?? '',
-                            style: const TextStyle(
-                                color: AppColors.primaryTextColor),
-                          ),
-                        ],
-                      ));
+                          fit: BoxFit.cover,
+                        )),
+                    // child: Column(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   crossAxisAlignment: CrossAxisAlignment.start,
+                    //   children: [
+                    //     Text(
+                    //       banner.description ?? '',
+                    //       style: const TextStyle(
+                    //         fontWeight: FontWeight.w600,
+                    //       ),
+                    //     ),
+                    //   ],
+                    // )
+                  );
                 },
               );
             }).toList(),

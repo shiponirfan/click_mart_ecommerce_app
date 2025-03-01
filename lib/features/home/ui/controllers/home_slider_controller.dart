@@ -24,11 +24,11 @@ class HomeSliderController extends GetxController {
     _bannerList = null;
     update();
     NetworkResponse response =
-        await Get.find<NetworkCaller>().getRequest(Urls.listProductSliderUrl);
+        await Get.find<NetworkCaller>().getRequest(Urls.homeSliderUrl);
     if (response.isSuccess) {
       BannerListModel bannerListModel =
           BannerListModel.fromJson(response.responseData);
-      _bannerList = bannerListModel.bannerList;
+      _bannerList = bannerListModel.bannerList!.results;
       isSuccess = true;
       update();
     } else {
