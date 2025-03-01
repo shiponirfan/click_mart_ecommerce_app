@@ -7,10 +7,31 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 
-class CategoryListScreen extends StatelessWidget {
+class CategoryListScreen extends StatefulWidget {
   const CategoryListScreen({super.key});
 
   static String name = '/category';
+
+  @override
+  State<CategoryListScreen> createState() => _CategoryListScreenState();
+}
+
+class _CategoryListScreenState extends State<CategoryListScreen> {
+  final ScrollController _scrollController = ScrollController();
+  final CategoryListController _categoryListController =
+      Get.find<CategoryListController>();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_loadMoreData);
+  }
+
+  void _loadMoreData() {
+    if (_scrollController.position.extentAfter < 300) {
+      _categoryListController.getCategoryList();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,24 +53,38 @@ class CategoryListScreen extends StatelessWidget {
             title: const Text('Category'),
           ),
           body: GetBuilder<CategoryListController>(builder: (controller) {
-            if (controller.inProgress) {
+            if (controller.initialProgress) {
               return _buildShimmerEffect();
             }
 
-            return GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                mainAxisSpacing: 16,
-              ),
-              itemBuilder: (context, index) {
-                CategoryModel categoryModel = controller.categoryList![index];
-                return FittedBox(
-                    child: CategoryCardWidget(
-                  categoryModel: categoryModel,
-                ));
-              },
-              itemCount: controller.categoryList!.length,
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            return Column(
+              children: [
+                Expanded(
+                  child: GridView.builder(
+                    controller: _scrollController,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 4,
+                      mainAxisSpacing: 16,
+                    ),
+                    itemBuilder: (context, index) {
+                      CategoryModel categoryModel =
+                          controller.categoryList![index];
+                      return FittedBox(
+                          child: CategoryCardWidget(
+                        categoryModel: categoryModel,
+                      ));
+                    },
+                    itemCount: controller.categoryList?.length ?? 0,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 10),
+                  ),
+                ),
+                Visibility(
+                  visible: controller.inProgress,
+                  child: const LinearProgressIndicator(),
+                ),
+              ],
             );
           }),
         ),
@@ -96,5 +131,11 @@ class CategoryListScreen extends StatelessWidget {
 
   void _onPop() {
     Get.find<MainNavbarController>().backToHomeScreen();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
   }
 }

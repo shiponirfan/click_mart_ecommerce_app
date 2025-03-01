@@ -10,7 +10,6 @@ import 'package:click_mart_ecommerce_app/features/common/ui/screens/main_navbar_
 import 'package:click_mart_ecommerce_app/features/home/ui/screens/home_screen.dart';
 import 'package:click_mart_ecommerce_app/features/products/ui/screens/product_details_screen.dart';
 import 'package:click_mart_ecommerce_app/features/products/ui/screens/product_list_by_category_screen.dart';
-import 'package:click_mart_ecommerce_app/features/products/ui/screens/product_list_by_remark_screen.dart';
 import 'package:click_mart_ecommerce_app/features/reviews/ui/screens/create_review_screen.dart';
 import 'package:click_mart_ecommerce_app/features/reviews/ui/screens/reviews_screen.dart';
 import 'package:flutter/material.dart';
@@ -60,10 +59,6 @@ class ClickMart extends StatelessWidget {
           route = const CreateReviewScreen();
         } else if (settings.name == CartItemScreen.name) {
           route = const CartItemScreen();
-        } else if (settings.name == ProductListByRemarkScreen.name) {
-          route = ProductListByRemarkScreen(
-            remark: settings.arguments as String,
-          );
         }
         return MaterialPageRoute(
           builder: (context) {

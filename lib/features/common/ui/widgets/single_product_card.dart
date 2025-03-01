@@ -32,7 +32,7 @@ class SingleProductCard extends StatelessWidget {
                 width: 120,
                 height: 100,
                 decoration: BoxDecoration(
-                  color: AppColors.themeColor.withOpacity(.1),
+                  color: AppColors.themeColor.withValues(alpha: .1),
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(10),
                     topRight: Radius.circular(10),
@@ -40,7 +40,9 @@ class SingleProductCard extends StatelessWidget {
                 ),
                 padding: const EdgeInsets.all(8),
                 child: Image.network(
-                  productModel.image ?? '',
+                  productModel.photos!.isNotEmpty
+                      ? productModel.photos!.first
+                      : 'https://media.istockphoto.com/id/1180410208/vector/landscape-image-gallery-with-the-photos-stack-up.jpg?s=612x612&w=0&k=20&c=G21-jgMQruADLPDBk7Sf1vVvCEtPiJD3Rf39AeB95yI=',
                   width: 88,
                   height: 88,
                   fit: BoxFit.fitWidth,
@@ -65,21 +67,21 @@ class SingleProductCard extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            '\$${productModel.price ?? ''}',
+                            '\$${productModel.currentPrice ?? ''}',
                             style: const TextStyle(color: AppColors.themeColor),
                           ),
                           const SizedBox(
                             width: 4,
                           ),
-                          Wrap(
+                          const Wrap(
                             crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
-                              const Icon(
+                              Icon(
                                 Icons.star,
                                 color: Colors.amber,
                                 size: 14,
                               ),
-                              Text('${productModel.star ?? ''}'),
+                              Text('4.7'),
                             ],
                           ),
                           const SizedBox(

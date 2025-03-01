@@ -1,18 +1,15 @@
 class BrandModel {
-  int? id;
-  String? brandName;
-  String? brandImg;
-  String? createdAt;
-  String? updatedAt;
+  String? sId;
+  String? title;
+  String? slug;
+  String? icon;
 
-  BrandModel(
-      {this.id, this.brandName, this.brandImg, this.createdAt, this.updatedAt});
+  BrandModel({this.sId, this.title, this.slug, this.icon});
 
   BrandModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    brandName = json['brandName'];
-    brandImg = json['brandImg'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
+    sId = json['_id'];
+    title = json['title'];
+    slug = json['slug'];
+    icon = json['icon'];
   }
 }

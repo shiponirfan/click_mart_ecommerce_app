@@ -73,7 +73,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             _buildProductTitleSection(
                                 textTheme,
                                 productDetailsModel.product?.title ?? '',
-                                productDetailsModel.product?.star ?? 0),
+                                5),
                             Text(
                               'Color',
                               style: textTheme.titleMedium,
@@ -123,8 +123,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   ),
                 ),
               ),
-              _buildAddToCartButton(
-                  textTheme, productDetailsModel.product?.price ?? '')
+          //     _buildAddToCartButton(
+          //         // textTheme, productDetailsModel.product?.currentPrice ?? ''
+          // )
             ],
           );
         }),
@@ -136,7 +137,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       decoration: BoxDecoration(
-          color: AppColors.themeColor.withOpacity(.1),
+          color: AppColors.themeColor.withValues(alpha: .1),
           borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(20), topRight: Radius.circular(20))),
       child: Row(

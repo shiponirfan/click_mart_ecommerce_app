@@ -1,18 +1,19 @@
 import 'package:click_mart_ecommerce_app/features/category/data/models/category_model.dart';
 
 class CategoryListModel {
+  int? code;
+  String? status;
   String? msg;
-  List<CategoryModel>? categoryList;
+  CategoryPaginationModel? categoryList;
 
-  CategoryListModel({this.msg, this.categoryList});
+  CategoryListModel({this.code, this.status, this.msg, this.categoryList});
 
   CategoryListModel.fromJson(Map<String, dynamic> json) {
+    code = json['code'];
+    status = json['status'];
     msg = json['msg'];
-    if (json['data'] != null) {
-      categoryList = <CategoryModel>[];
-      json['data'].forEach((v) {
-        categoryList!.add(CategoryModel.fromJson(v));
-      });
-    }
+    categoryList = json['data'] != null
+        ? CategoryPaginationModel.fromJson(json['data'])
+        : null;
   }
 }

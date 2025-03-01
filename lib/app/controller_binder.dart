@@ -5,7 +5,6 @@ import 'package:click_mart_ecommerce_app/features/category/ui/controllers/catego
 import 'package:click_mart_ecommerce_app/features/common/ui/controllers/auth_controller.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/controllers/main_navbar_controller.dart';
 import 'package:click_mart_ecommerce_app/features/home/ui/controllers/home_slider_controller.dart';
-import 'package:click_mart_ecommerce_app/features/home/ui/controllers/product_list_by_remark_controller.dart';
 import 'package:click_mart_ecommerce_app/features/products/ui/controllers/product_details_controller.dart';
 import 'package:click_mart_ecommerce_app/features/products/ui/controllers/product_list_by_category_controller.dart';
 import 'package:click_mart_ecommerce_app/services/network_caller.dart';
@@ -22,8 +21,7 @@ class ControllerBinder extends Bindings {
     Get.lazyPut(() => SignupScreenController());
     Get.lazyPut(() => HomeSliderController());
     Get.lazyPut(() => CategoryListController());
-    Get.lazyPut(() => ProductListByRemarkController());
-    Get.lazyPut(() => ProductListByCategoryController());
     Get.lazyPut(() => ProductDetailsController());
+    Get.lazyPut(() => ProductListByCategoryController());
   }
 }

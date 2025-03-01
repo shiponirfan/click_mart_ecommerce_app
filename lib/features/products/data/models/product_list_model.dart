@@ -1,18 +1,19 @@
 import 'package:click_mart_ecommerce_app/features/products/data/models/product_model.dart';
 
 class ProductListModel {
+  int? code;
+  String? status;
   String? msg;
-  List<ProductModel>? productList;
+  ProductPaginationModel? productList;
 
-  ProductListModel({this.msg, this.productList});
+  ProductListModel({this.code, this.status, this.msg, this.productList});
 
   ProductListModel.fromJson(Map<String, dynamic> json) {
+    code = json['code'];
+    status = json['status'];
     msg = json['msg'];
-    if (json['data'] != null) {
-      productList = <ProductModel>[];
-      json['data'].forEach((v) {
-        productList!.add(ProductModel.fromJson(v));
-      });
-    }
+    productList = json['data'] != null
+        ? ProductPaginationModel.fromJson(json['data'])
+        : null;
   }
 }

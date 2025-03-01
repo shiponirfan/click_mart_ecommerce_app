@@ -19,8 +19,8 @@ class CategoryCardWidget extends StatelessWidget {
         Get.toNamed(
           ProductListByCategoryScreen.name,
           arguments: {
-            'categoryName': categoryModel.categoryName ?? '',
-            'categoryId': categoryModel.id!,
+            'categoryName': categoryModel.title ?? '',
+            'categoryId': categoryModel.sId,
           },
         );
       },
@@ -34,7 +34,7 @@ class CategoryCardWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             child: Image.network(
-              categoryModel.categoryImg ?? '',
+              categoryModel.icon ?? '',
               fit: BoxFit.fitWidth,
             ),
           ),
@@ -42,7 +42,7 @@ class CategoryCardWidget extends StatelessWidget {
             height: 8,
           ),
           Text(
-            categoryModel.categoryName ?? '',
+            categoryModel.title ?? '',
             style: const TextStyle(
               color: AppColors.themeColor,
             ),
