@@ -1,4 +1,6 @@
 import 'package:click_mart_ecommerce_app/app/app_colors.dart';
+import 'package:click_mart_ecommerce_app/features/cart/data/models/cart_item_model.dart';
+import 'package:click_mart_ecommerce_app/features/cart/ui/controllers/cart_item_screen_controller.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/controllers/main_navbar_controller.dart';
 import 'package:click_mart_ecommerce_app/features/products/ui/widgets/product_quantity_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,6 +17,21 @@ class CartItemScreen extends StatefulWidget {
 }
 
 class _CartItemScreenState extends State<CartItemScreen> {
+  final ScrollController _scrollController = ScrollController();
+  final CartItemScreenController _cartItemScreenController =
+      Get.find<CartItemScreenController>();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.position.extentAfter < 300 &&
+          !_cartItemScreenController.inProgress) {
+        _cartItemScreenController.getCartItemList();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
@@ -29,86 +46,99 @@ class _CartItemScreenState extends State<CartItemScreen> {
             icon: const Icon(CupertinoIcons.back),
             onPressed: _onPop,
           ),
-          title: const Text('Reviews'),
+          title: const Text('Cart Items'),
         ),
-        body: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                itemBuilder: (context, index) {
-                  return Card(
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    color: Colors.white,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 8),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.asset(
-                              'assets/images/shoe.png',
-                              width: 100,
-                              fit: BoxFit.fitWidth,
+        body: GetBuilder<CartItemScreenController>(builder: (controller) {
+          if (controller.initialProgress) {
+            return const CircularProgressIndicator();
+          }
+          return Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  controller: _scrollController,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  itemBuilder: (context, index) {
+                    CartItemModel cartItem = controller.cartItemModel[index];
+                    return Card(
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      color: Colors.white,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 8),
+                        child: Row(
+                          children: [
+                            Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Image.network(
+                                  cartItem.product!.photos!.isNotEmpty
+                                      ? cartItem.product!.photos!.first
+                                      : 'https://media.istockphoto.com/id/1180410208/vector/landscape-image-gallery-with-the-photos-stack-up.jpg?s=612x612&w=0&k=20&c=G21-jgMQruADLPDBk7Sf1vVvCEtPiJD3Rf39AeB95yI=',
+                                  width: 100,
+                                  fit: BoxFit.fitWidth,
+                                )),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    cartItem.product!.title ?? '',
+                                    style: textTheme.titleSmall?.copyWith(
+                                        overflow: TextOverflow.ellipsis),
+                                    maxLines: 1,
+                                  ),
+                                  const Wrap(
+                                    children: [
+                                      Text('Color: Red'),
+                                      SizedBox(
+                                        width: 8,
+                                      ),
+                                      Text('Size: X'),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    '\$${cartItem.product!.currentPrice ?? ''}',
+                                    style: textTheme.titleLarge
+                                        ?.copyWith(color: AppColors.themeColor),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  'New Year Special Shoe',
-                                  style: textTheme.titleSmall?.copyWith(
-                                      overflow: TextOverflow.ellipsis),
-                                  maxLines: 1,
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(CupertinoIcons.trash),
                                 ),
-                                const Wrap(
-                                  children: [
-                                    Text('Color: Red'),
-                                    SizedBox(
-                                      width: 8,
-                                    ),
-                                    Text('Size: X'),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Text(
-                                  '\$100',
-                                  style: textTheme.titleLarge
-                                      ?.copyWith(color: AppColors.themeColor),
-                                ),
+                                ProductQuantityButton(
+                                  onChange: (quantity) {},
+                                )
                               ],
                             ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              IconButton(
-                                onPressed: () {},
-                                icon: const Icon(CupertinoIcons.trash),
-                              ),
-                              ProductQuantityButton(
-                                onChange: (quantity) {},
-                              )
-                            ],
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                },
-                itemCount: 10,
+                    );
+                  },
+                  itemCount: controller.cartItemModel.length,
+                ),
               ),
-            ),
-            _buildCheckoutButton(textTheme),
-          ],
-        ),
+              Visibility(
+                visible: controller.inProgress,
+                child: const LinearProgressIndicator(),
+              ),
+              _buildCheckoutButton(textTheme),
+            ],
+          );
+        }),
       ),
     );
   }

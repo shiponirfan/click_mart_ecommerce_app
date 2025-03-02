@@ -1,5 +1,6 @@
 import 'package:click_mart_ecommerce_app/app/app_colors.dart';
 import 'package:click_mart_ecommerce_app/features/auth/ui/controllers/login_screen_controller.dart';
+import 'package:click_mart_ecommerce_app/features/auth/ui/screens/signup_screen.dart';
 import 'package:click_mart_ecommerce_app/features/auth/ui/widgets/app_logo_widget.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/widgets/show_snackbar_message.dart';
 import 'package:click_mart_ecommerce_app/features/home/ui/screens/home_screen.dart';
@@ -109,6 +110,26 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   );
                 }),
+                const SizedBox(
+                  height: 24,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("Don't Have An Account? "),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, SignupScreen.name);
+                      },
+                      child: const Text(
+                        "Sign up",
+                        style: TextStyle(
+                          color: AppColors.themeColor,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

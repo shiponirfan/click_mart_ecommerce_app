@@ -1,5 +1,6 @@
 import 'package:click_mart_ecommerce_app/app/app_colors.dart';
 import 'package:click_mart_ecommerce_app/features/auth/ui/controllers/signup_screen_controller.dart';
+import 'package:click_mart_ecommerce_app/features/auth/ui/screens/login_screen.dart';
 import 'package:click_mart_ecommerce_app/features/auth/ui/screens/otp_verification_screen.dart';
 import 'package:click_mart_ecommerce_app/features/auth/ui/widgets/app_logo_widget.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/widgets/show_snackbar_message.dart';
@@ -62,6 +63,26 @@ class _SignupScreenState extends State<SignupScreen> {
                 child: const Text(
                   'Signup',
                 ),
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Already Have An Account? "),
+                  InkWell(
+                    onTap: () {
+                      Navigator.pushNamed(context, LoginScreen.name);
+                    },
+                    child: const Text(
+                      "Login",
+                      style: TextStyle(
+                        color: AppColors.themeColor,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

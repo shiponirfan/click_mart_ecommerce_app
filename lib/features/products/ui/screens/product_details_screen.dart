@@ -1,7 +1,11 @@
 import 'package:click_mart_ecommerce_app/app/app_colors.dart';
+import 'package:click_mart_ecommerce_app/features/auth/ui/screens/login_screen.dart';
+import 'package:click_mart_ecommerce_app/features/common/ui/controllers/auth_controller.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/controllers/main_navbar_controller.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/screens/main_navbar_screen.dart';
+import 'package:click_mart_ecommerce_app/features/common/ui/widgets/show_snackbar_message.dart';
 import 'package:click_mart_ecommerce_app/features/products/data/models/product_model.dart';
+import 'package:click_mart_ecommerce_app/features/products/ui/controllers/add_to_cart_controller.dart';
 import 'package:click_mart_ecommerce_app/features/products/ui/controllers/product_details_controller.dart';
 import 'package:click_mart_ecommerce_app/features/products/ui/widgets/product_color_option_widget.dart';
 import 'package:click_mart_ecommerce_app/features/products/ui/widgets/product_details_slider.dart';
@@ -135,8 +139,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   ),
                 ),
               ),
-              _buildAddToCartButton(
-                  textTheme, productModel.currentPrice.toString())
+              _buildAddToCartButton(textTheme,
+                  productModel.currentPrice.toString(), productModel.sId ?? '')
             ],
           );
         }),
@@ -144,7 +148,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     );
   }
 
-  Widget _buildAddToCartButton(TextTheme textTheme, String price) {
+  Widget _buildAddToCartButton(
+      TextTheme textTheme, String price, String productId) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       decoration: BoxDecoration(
@@ -171,15 +176,39 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           SizedBox(
             width: 140,
             child: ElevatedButton(
-                onPressed: () {
-                  Get.toNamed(MainNavbarScreen.name);
-                  Get.find<MainNavbarController>().moveToCartItemScreen();
-                },
+                onPressed: () => _addToCartButton(productId),
                 child: const Text('Add To Cart')),
           )
         ],
       ),
     );
+  }
+
+  void _addToCartButton(String productId) async {
+    bool isLogged = await Get.find<AuthController>().isUserLoggedIn();
+    AddToCartController addToCartController = Get.find<AddToCartController>();
+    if (isLogged) {
+      bool isSuccess = await addToCartController.addToCartItem(productId);
+      if (mounted) {
+        showSnackBarMessage(
+          context,
+          addToCartController.successMessage ?? 'Something Is Wrong',
+        );
+      }
+      if (isSuccess) {
+        Get.toNamed(MainNavbarScreen.name);
+        Get.find<MainNavbarController>().moveToCartItemScreen();
+      } else{
+        if (mounted) {
+          showSnackBarMessage(
+            context,
+            addToCartController.successMessage ?? 'Something Is Wrong',
+          );
+        }
+      }
+    } else {
+      Get.toNamed(LoginScreen.name);
+    }
   }
 
   Widget _buildProductTitleSection(
