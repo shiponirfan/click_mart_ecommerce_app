@@ -1,7 +1,7 @@
 import 'package:click_mart_ecommerce_app/app/app_colors.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/controllers/main_navbar_controller.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/screens/main_navbar_screen.dart';
-import 'package:click_mart_ecommerce_app/features/products/data/models/product_details_list_model.dart';
+import 'package:click_mart_ecommerce_app/features/products/data/models/product_model.dart';
 import 'package:click_mart_ecommerce_app/features/products/ui/controllers/product_details_controller.dart';
 import 'package:click_mart_ecommerce_app/features/products/ui/widgets/product_color_option_widget.dart';
 import 'package:click_mart_ecommerce_app/features/products/ui/widgets/product_details_slider.dart';
@@ -49,7 +49,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           if (controller.errorMessage != null) {
             return Text(controller.errorMessage!);
           }
-          ProductDetailsModel productDetailsModel = controller.productDetails!;
+          ProductModel productModel = controller.productDetails!;
           return Column(
             children: [
               Expanded(
@@ -58,10 +58,18 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     children: [
                       ProductDetailsSlider(
                         images: [
-                          productDetailsModel.img1 ?? '',
-                          productDetailsModel.img2 ?? '',
-                          productDetailsModel.img3 ?? '',
-                          productDetailsModel.img4 ?? '',
+                          productModel.photos!.isNotEmpty
+                              ? productModel.photos!.first
+                              : 'https://media.istockphoto.com/id/1180410208/vector/landscape-image-gallery-with-the-photos-stack-up.jpg?s=612x612&w=0&k=20&c=G21-jgMQruADLPDBk7Sf1vVvCEtPiJD3Rf39AeB95yI=',
+                          productModel.photos!.isNotEmpty
+                              ? productModel.photos!.first
+                              : 'https://media.istockphoto.com/id/1180410208/vector/landscape-image-gallery-with-the-photos-stack-up.jpg?s=612x612&w=0&k=20&c=G21-jgMQruADLPDBk7Sf1vVvCEtPiJD3Rf39AeB95yI=',
+                          productModel.photos!.isNotEmpty
+                              ? productModel.photos!.first
+                              : 'https://media.istockphoto.com/id/1180410208/vector/landscape-image-gallery-with-the-photos-stack-up.jpg?s=612x612&w=0&k=20&c=G21-jgMQruADLPDBk7Sf1vVvCEtPiJD3Rf39AeB95yI=',
+                          productModel.photos!.isNotEmpty
+                              ? productModel.photos!.first
+                              : 'https://media.istockphoto.com/id/1180410208/vector/landscape-image-gallery-with-the-photos-stack-up.jpg?s=612x612&w=0&k=20&c=G21-jgMQruADLPDBk7Sf1vVvCEtPiJD3Rf39AeB95yI=',
                         ],
                       ),
                       Padding(
@@ -71,9 +79,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             _buildProductTitleSection(
-                                textTheme,
-                                productDetailsModel.product?.title ?? '',
-                                5),
+                                textTheme, productModel.title ?? '', 5),
                             Text(
                               'Color',
                               style: textTheme.titleMedium,
@@ -82,7 +88,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               height: 8,
                             ),
                             ProductColorOptionWidget(
-                              colors: productDetailsModel.color!.split(','),
+                              colors: productModel.colors != null
+                                  ? productModel.colors!
+                                      .cast<String>() // Cast to List<String>
+                                  : ['0xff445544'],
                               onChange: (String color) {},
                             ),
                             const SizedBox(
@@ -96,7 +105,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               height: 8,
                             ),
                             ProductSizeOptionWidget(
-                              size: productDetailsModel.size!.split(','),
+                              size: productModel.sizes != null
+                                  ? productModel.sizes!
+                                      .cast<String>() // Cast to List<String>
+                                  : ['M', 'XL'],
                               onChange: (String size) {},
                             ),
                             const SizedBox(
@@ -110,7 +122,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               height: 8,
                             ),
                             Text(
-                              productDetailsModel.des ?? '',
+                              productModel.description ?? '',
                               style: textTheme.bodyMedium,
                             ),
                             const SizedBox(
@@ -123,9 +135,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   ),
                 ),
               ),
-          //     _buildAddToCartButton(
-          //         // textTheme, productDetailsModel.product?.currentPrice ?? ''
-          // )
+              _buildAddToCartButton(
+                  textTheme, productModel.currentPrice.toString())
             ],
           );
         }),

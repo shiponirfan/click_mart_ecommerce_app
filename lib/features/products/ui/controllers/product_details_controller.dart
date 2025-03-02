@@ -1,5 +1,6 @@
 import 'package:click_mart_ecommerce_app/app/urls.dart';
-import 'package:click_mart_ecommerce_app/features/products/data/models/product_details_list_model.dart';
+import 'package:click_mart_ecommerce_app/features/products/data/models/product_details_model.dart';
+import 'package:click_mart_ecommerce_app/features/products/data/models/product_model.dart';
 import 'package:click_mart_ecommerce_app/services/network_response.dart';
 import 'package:click_mart_ecommerce_app/services/network_caller.dart';
 import 'package:get/get.dart';
@@ -13,9 +14,9 @@ class ProductDetailsController extends GetxController {
 
   String? get errorMessage => _errorMessage;
 
-  ProductDetailsModel? _productDetails;
+  ProductModel? _productDetails;
 
-  ProductDetailsModel? get productDetails => _productDetails;
+  ProductModel? get productDetails => _productDetails;
 
   Future<bool> getProductDetails(String productId) async {
     bool isSuccess = false;
@@ -25,9 +26,9 @@ class ProductDetailsController extends GetxController {
     NetworkResponse response = await Get.find<NetworkCaller>()
         .getRequest(Urls.productDetailsByIdUrl(productId));
     if (response.isSuccess) {
-      ProductDetailsListModel productDetailsListModel =
-          ProductDetailsListModel.fromJson(response.responseData);
-      _productDetails = productDetailsListModel.productDetails?[0];
+      ProductDetailsModel productDetailsModel =
+          ProductDetailsModel.fromJson(response.responseData);
+      _productDetails = productDetailsModel.productDetails;
       isSuccess = true;
       update();
     } else {
