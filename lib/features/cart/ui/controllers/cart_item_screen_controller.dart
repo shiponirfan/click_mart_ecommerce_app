@@ -17,57 +17,78 @@ class CartItemScreenController extends GetxController {
 
   String? get errorMessage => _errorMessage;
 
-  List<CartItemModel> _cartItemModel = [];
+  List<CartItemModel> _cartItemList = [];
 
-  List<CartItemModel> get cartItemModel => _cartItemModel;
+  List<CartItemModel> get cartItemList => _cartItemList;
 
   final int _count = 10;
   int _page = 1;
   int? _lastPage;
 
-  Future<bool> getCartItemList() async {
+  int get count => _count;
+
+  int? get lastPage => _lastPage;
+
+  int get page => _page;
+
+  Future<bool> getCartItemList({bool isRefresh = false}) async {
+    await Get.find<AuthController>().getUserData();
     String? accessToken = Get.find<AuthController>().userToken;
-    if (_lastPage != null && _page > _lastPage!) return false;
+    if (accessToken == null || accessToken.isEmpty) {
+      _errorMessage = "Authentication token is missing.";
+      update();
+      return false;
+    }
+
+    if (isRefresh) {
+      _page = 1;
+      _lastPage = null;
+      _cartItemList.clear();
+    }
+
+    if (_lastPage != null && _page > _lastPage!) {
+      return false;
+    }
 
     _inProgress = true;
     update();
 
-    Map<String, dynamic> queryParams = {
-      'count': _count,
-      'page': _page,
-    };
-
     NetworkResponse response = await Get.find<NetworkCaller>().getRequest(
-        Urls.cartUrl,
-        queryParams: queryParams,
-        accessToken: accessToken);
+      Urls.cartUrl,
+      queryParams: {
+        'count': _count,
+        'page': _page,
+      },
+      accessToken: accessToken,
+    );
+
+    bool isSuccess = false;
 
     if (response.isSuccess) {
       CartItemListModel cartItemListModel =
           CartItemListModel.fromJson(response.responseData);
 
       if (_page == 1) {
-        _cartItemModel.clear();
+        _cartItemList = cartItemListModel.cartItemData?.results ?? [];
+      } else {
+        _cartItemList.addAll(cartItemListModel.cartItemData?.results ?? []);
       }
 
-      _cartItemModel.addAll(cartItemListModel.cartItemList?.results ?? []);
-      _lastPage = cartItemListModel.cartItemList?.lastPage;
-
+      _lastPage = cartItemListModel.cartItemData?.lastPage;
       _page++;
 
       _errorMessage = null;
-      update();
-      return true;
+      isSuccess = true;
     } else {
       _errorMessage = response.errorMessage;
-      update();
-      return false;
     }
+
+    _inProgress = false;
+    update();
+    return isSuccess;
   }
 
   Future<bool> refreshCartItemList() async {
-    _page = 1;
-    _lastPage = null;
-    return getCartItemList();
+    return getCartItemList(isRefresh: true);
   }
 }

@@ -85,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (controller.initialProgress) {
                     return _buildProductByRemarkShimmerEffect();
                   }
-                  if (controller.productList!.isEmpty) {
+                  if (controller.productList.isEmpty) {
                     return const NoProductFound();
                   }
                   return SingleChildScrollView(
