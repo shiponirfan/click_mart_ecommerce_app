@@ -8,6 +8,7 @@ class Urls {
   static const String categoryListUrl = '$_baseUrl/categories';
   static const String productListUrl = '$_baseUrl/products';
   static const String cartUrl = '$_baseUrl/cart';
+  static const String wishlistUrl = '$_baseUrl/wishlist';
 
   static String productDetailsByIdUrl(String productId) =>
       '$_baseUrl/products/id/$productId';

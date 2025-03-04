@@ -9,6 +9,7 @@ import 'package:click_mart_ecommerce_app/features/home/ui/controllers/home_slide
 import 'package:click_mart_ecommerce_app/features/products/ui/controllers/add_to_cart_controller.dart';
 import 'package:click_mart_ecommerce_app/features/products/ui/controllers/product_details_controller.dart';
 import 'package:click_mart_ecommerce_app/features/products/ui/controllers/product_list_by_category_controller.dart';
+import 'package:click_mart_ecommerce_app/features/wishList/ui/controllers/wish_list_screen_controller.dart';
 import 'package:click_mart_ecommerce_app/services/network_caller.dart';
 import 'package:get/get.dart';
 
@@ -27,5 +28,6 @@ class ControllerBinder extends Bindings {
     Get.lazyPut(() => ProductListByCategoryController());
     Get.lazyPut(() => AddToCartController());
     Get.lazyPut(() => CartItemScreenController());
+    Get.lazyPut(() => WishListScreenController());
   }
 }

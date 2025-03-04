@@ -3,6 +3,7 @@ import 'package:click_mart_ecommerce_app/features/cart/data/models/cart_item_mod
 import 'package:click_mart_ecommerce_app/features/cart/ui/controllers/cart_item_screen_controller.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/controllers/main_navbar_controller.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/widgets/show_snackbar_message.dart';
+import 'package:click_mart_ecommerce_app/features/products/ui/screens/product_details_screen.dart';
 import 'package:click_mart_ecommerce_app/features/products/ui/widgets/product_quantity_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -102,12 +103,18 @@ class _CartItemScreenState extends State<CartItemScreen> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Image.network(
-                                  cartItem.product?.photos?.isNotEmpty == true
-                                      ? cartItem.product!.photos!.first
-                                      : 'https://media.istockphoto.com/id/1180410208/vector/landscape-image-gallery-with-the-photos-stack-up.jpg?s=612x612&w=0&k=20&c=G21-jgMQruADLPDBk7Sf1vVvCEtPiJD3Rf39AeB95yI=',
-                                  width: 100,
-                                  fit: BoxFit.fitWidth,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Get.toNamed(ProductDetailsScreen.name,
+                                        arguments: cartItem.product!.sId);
+                                  },
+                                  child: Image.network(
+                                    cartItem.product?.photos?.isNotEmpty == true
+                                        ? cartItem.product!.photos!.first
+                                        : 'https://media.istockphoto.com/id/1180410208/vector/landscape-image-gallery-with-the-photos-stack-up.jpg?s=612x612&w=0&k=20&c=G21-jgMQruADLPDBk7Sf1vVvCEtPiJD3Rf39AeB95yI=',
+                                    width: 100,
+                                    fit: BoxFit.fitWidth,
+                                  ),
                                 ),
                               ),
                               Expanded(
@@ -116,11 +123,17 @@ class _CartItemScreenState extends State<CartItemScreen> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      cartItem.product?.title ?? '',
-                                      style: textTheme.titleSmall?.copyWith(
-                                          overflow: TextOverflow.ellipsis),
-                                      maxLines: 1,
+                                    GestureDetector(
+                                      onTap: () {
+                                        Get.toNamed(ProductDetailsScreen.name,
+                                            arguments: cartItem.product!.sId);
+                                      },
+                                      child: Text(
+                                        cartItem.product?.title ?? '',
+                                        style: textTheme.titleSmall?.copyWith(
+                                            overflow: TextOverflow.ellipsis),
+                                        maxLines: 1,
+                                      ),
                                     ),
                                     const Wrap(
                                       children: [

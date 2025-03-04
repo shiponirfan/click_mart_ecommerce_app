@@ -22,6 +22,7 @@ class AddToCartController extends GetxController {
   AddToCartItemModel? get addToCartModel => _addToCartModel;
 
   Future<bool> addToCartItem(String productId, int quantity) async {
+    await Get.find<AuthController>().getUserData();
     String? accessToken = Get.find<AuthController>().userToken;
 
     bool isSuccess = false;
