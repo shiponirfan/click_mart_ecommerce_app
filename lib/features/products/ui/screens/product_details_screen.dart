@@ -34,6 +34,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     Get.find<ProductDetailsController>().getProductDetails(widget.productId);
   }
 
+  int productQuantity = 1;
+
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
@@ -188,7 +190,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     bool isLogged = await Get.find<AuthController>().isUserLoggedIn();
     AddToCartController addToCartController = Get.find<AddToCartController>();
     if (isLogged) {
-      bool isSuccess = await addToCartController.addToCartItem(productId);
+      bool isSuccess =
+          await addToCartController.addToCartItem(productId, productQuantity);
       if (mounted) {
         showSnackBarMessage(
           context,
@@ -198,7 +201,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       if (isSuccess) {
         Get.toNamed(MainNavbarScreen.name);
         Get.find<MainNavbarController>().moveToCartItemScreen();
-      } else{
+      } else {
         if (mounted) {
           showSnackBarMessage(
             context,
@@ -234,7 +237,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         ),
         ProductQuantityButton(
           onChange: (quantity) {
-            // TODO: Add Quantity Option
+            productQuantity = quantity;
           },
         ),
       ],

@@ -82,6 +82,83 @@ class NetworkCaller {
     }
   }
 
+  Future<NetworkResponse> patchRequest(String url,
+      {Map<String, dynamic>? body,
+      String? accessToken,
+      Map<String, dynamic>? queryParams}) async {
+    try {
+      Map<String, String> headers = {
+        'content-type': 'application/json',
+      };
+      if (accessToken != null) {
+        headers['token'] = accessToken;
+      }
+      if (queryParams != null) {
+        url += '?';
+        for (String param in queryParams.keys) {
+          url += '$param=${queryParams[param]}&';
+        }
+      }
+      Uri uri = Uri.parse(url);
+      _logRequest(url, headers);
+      Response response =
+          await patch(uri, headers: headers, body: jsonEncode(body));
+      _logResponse(url, response.statusCode, response.headers, response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final decodedMessage = jsonDecode(response.body);
+        return NetworkResponse(
+          isSuccess: true,
+          statusCode: response.statusCode,
+          responseData: decodedMessage,
+        );
+      } else {
+        return NetworkResponse(
+          isSuccess: false,
+          statusCode: response.statusCode,
+        );
+      }
+    } catch (e) {
+      _logResponse(url, -1, null, '', e.toString());
+      return NetworkResponse(
+          isSuccess: false, statusCode: -1, errorMessage: e.toString());
+    }
+  }
+
+  Future<NetworkResponse> deleteRequest(String url, String? accessToken) async {
+    try {
+      Map<String, String> headers = {
+        'content-type': 'application/json',
+      };
+      if (accessToken != null) {
+        headers['token'] = accessToken;
+      }
+      Uri uri = Uri.parse(url);
+      _logRequest(url, headers);
+      Response response = await delete(
+        uri,
+        headers: headers,
+      );
+      _logResponse(url, response.statusCode, response.headers, response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final decodedMessage = jsonDecode(response.body);
+        return NetworkResponse(
+          isSuccess: true,
+          statusCode: response.statusCode,
+          responseData: decodedMessage,
+        );
+      } else {
+        return NetworkResponse(
+          isSuccess: false,
+          statusCode: response.statusCode,
+        );
+      }
+    } catch (e) {
+      _logResponse(url, -1, null, '', e.toString());
+      return NetworkResponse(
+          isSuccess: false, statusCode: -1, errorMessage: e.toString());
+    }
+  }
+
   void _logRequest(String url, [Map<String, String>? headers, String? body]) {
     _logger.i('URL => $url\nHEADERS => $headers\nBODY => $body');
   }

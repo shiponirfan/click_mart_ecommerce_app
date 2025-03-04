@@ -14,8 +14,11 @@ class CartItemScreenController extends GetxController {
   bool get initialProgress => _page == 1 && _inProgress;
 
   String? _errorMessage;
+  String? _successMessage;
 
   String? get errorMessage => _errorMessage;
+
+  String? get successMessage => _successMessage;
 
   List<CartItemModel> _cartItemList = [];
 
@@ -90,5 +93,74 @@ class CartItemScreenController extends GetxController {
 
   Future<bool> refreshCartItemList() async {
     return getCartItemList(isRefresh: true);
+  }
+
+  Future<bool> updateCartItemQuantity(String cartItemId, int quantity) async {
+    await Get.find<AuthController>().getUserData();
+    String? accessToken = Get.find<AuthController>().userToken;
+    if (accessToken == null || accessToken.isEmpty) {
+      _errorMessage = "Authentication token is missing.";
+      update();
+      return false;
+    }
+
+    bool isSuccess = false;
+    _inProgress = true;
+    update();
+
+    Map<String, dynamic> body = {"quantity": quantity};
+
+    NetworkResponse response = await Get.find<NetworkCaller>().patchRequest(
+      '${Urls.cartUrl}/$cartItemId',
+      accessToken: accessToken,
+      body: body,
+    );
+
+    if (response.isSuccess) {
+      CartItemListModel cartItemListModel =
+          CartItemListModel.fromJson(response.responseData);
+      _successMessage = cartItemListModel.msg;
+      isSuccess = true;
+      getCartItemList(isRefresh: true);
+    } else {
+      _errorMessage = response.errorMessage;
+    }
+
+    _inProgress = false;
+    update();
+    return isSuccess;
+  }
+
+  Future<bool> deleteCartItem(String cartItemId) async {
+    await Get.find<AuthController>().getUserData();
+    String? accessToken = Get.find<AuthController>().userToken;
+    if (accessToken == null || accessToken.isEmpty) {
+      _errorMessage = "Authentication token is missing.";
+      update();
+      return false;
+    }
+
+    bool isSuccess = false;
+    _inProgress = true;
+    update();
+
+    NetworkResponse response = await Get.find<NetworkCaller>().deleteRequest(
+      '${Urls.cartUrl}/$cartItemId',
+      accessToken,
+    );
+
+    if (response.isSuccess) {
+      CartItemListModel cartItemListModel =
+          CartItemListModel.fromJson(response.responseData);
+      _successMessage = cartItemListModel.msg;
+      isSuccess = true;
+      getCartItemList(isRefresh: true);
+    } else {
+      _errorMessage = response.errorMessage;
+    }
+
+    _inProgress = false;
+    update();
+    return isSuccess;
   }
 }

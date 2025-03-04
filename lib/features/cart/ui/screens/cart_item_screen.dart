@@ -2,6 +2,7 @@ import 'package:click_mart_ecommerce_app/app/app_colors.dart';
 import 'package:click_mart_ecommerce_app/features/cart/data/models/cart_item_model.dart';
 import 'package:click_mart_ecommerce_app/features/cart/ui/controllers/cart_item_screen_controller.dart';
 import 'package:click_mart_ecommerce_app/features/common/ui/controllers/main_navbar_controller.dart';
+import 'package:click_mart_ecommerce_app/features/common/ui/widgets/show_snackbar_message.dart';
 import 'package:click_mart_ecommerce_app/features/products/ui/widgets/product_quantity_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -30,12 +31,14 @@ class _CartItemScreenState extends State<CartItemScreen> {
       if (_scrollController.position.extentAfter < 300 &&
           !_cartItemScreenController.inProgress &&
           (_cartItemScreenController.lastPage == null ||
-              _cartItemScreenController.page! <=
+              _cartItemScreenController.page <=
                   _cartItemScreenController.lastPage!)) {
         _cartItemScreenController.getCartItemList();
       }
     });
   }
+
+  int totalPrice = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +75,10 @@ class _CartItemScreenState extends State<CartItemScreen> {
               return const Center(
                 child: Text("No items in cart"),
               );
+            }
+
+            for (CartItemModel cartItem in controller.cartItemList) {
+              totalPrice += cartItem.product?.currentPrice ?? 0;
             }
 
             return Column(
@@ -141,12 +148,37 @@ class _CartItemScreenState extends State<CartItemScreen> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   IconButton(
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      bool isSuccess =
+                                          await _cartItemScreenController
+                                              .deleteCartItem(
+                                                  cartItem.sId ?? '');
+                                      if (isSuccess) {
+                                        showSnackBarMessage(
+                                          context,
+                                          _cartItemScreenController
+                                                  .successMessage ??
+                                              'Something Is Wrong',
+                                        );
+                                      }
+                                    },
                                     icon: const Icon(CupertinoIcons.trash),
                                   ),
                                   ProductQuantityButton(
-                                    onChange: (quantity) {
-                                      // Handle quantity change
+                                    defaultQuantity: cartItem.quantity,
+                                    onChange: (quantity) async {
+                                      bool isSuccess =
+                                          await _cartItemScreenController
+                                              .updateCartItemQuantity(
+                                                  cartItem.sId ?? '', quantity);
+                                      if (isSuccess) {
+                                        showSnackBarMessage(
+                                          context,
+                                          _cartItemScreenController
+                                                  .successMessage ??
+                                              'Something Is Wrong',
+                                        );
+                                      }
                                     },
                                   ),
                                 ],
@@ -175,7 +207,7 @@ class _CartItemScreenState extends State<CartItemScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       decoration: BoxDecoration(
-          color: AppColors.themeColor.withOpacity(.1),
+          color: AppColors.themeColor.withValues(alpha: .1),
           borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(20), topRight: Radius.circular(20))),
       child: Row(
@@ -188,7 +220,7 @@ class _CartItemScreenState extends State<CartItemScreen> {
                 style: textTheme.titleMedium,
               ),
               Text(
-                '\$1005',
+                '\$$totalPrice',
                 style:
                     textTheme.titleLarge?.copyWith(color: AppColors.themeColor),
               ),

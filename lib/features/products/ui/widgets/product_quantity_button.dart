@@ -2,9 +2,10 @@ import 'package:click_mart_ecommerce_app/app/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class ProductQuantityButton extends StatefulWidget {
-  const ProductQuantityButton({super.key, required this.onChange});
+  const ProductQuantityButton({super.key, required this.onChange, this.defaultQuantity});
 
   final Function(int) onChange;
+  final int? defaultQuantity;
 
   @override
   State<ProductQuantityButton> createState() => _ProductQuantityButtonState();
@@ -30,7 +31,7 @@ class _ProductQuantityButtonState extends State<ProductQuantityButton> {
         SizedBox(
           width: 34,
           child: Text(
-            '$_quantity',
+            '${widget.defaultQuantity ?? _quantity}',
             style: Theme.of(context).textTheme.titleLarge,
             textAlign: TextAlign.center,
           ),
