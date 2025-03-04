@@ -241,8 +241,15 @@ class _CartItemScreenState extends State<CartItemScreen> {
           ),
           SizedBox(
             width: 140,
-            child:
-                ElevatedButton(onPressed: () {}, child: const Text('Checkout')),
+            child: ElevatedButton(
+                onPressed: () {
+                  showSnackBarMessage(
+                    context,
+                    'Order Place Successfully',
+                  );
+                  _onPop();
+                },
+                child: const Text('Checkout')),
           )
         ],
       ),
